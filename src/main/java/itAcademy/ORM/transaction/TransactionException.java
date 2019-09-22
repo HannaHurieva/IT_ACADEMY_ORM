@@ -1,8 +1,11 @@
 package itAcademy.ORM.transaction;
 
-import javax.persistence.PersistenceException;
+public class TransactionException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
-public class TransactionException extends PersistenceException {
+    public TransactionException() {
+    }
+
     /**
      * Constructs a TransactionException using the specified information.
      *
@@ -10,5 +13,13 @@ public class TransactionException extends PersistenceException {
      */
     public TransactionException(String message) {
         super(message);
+    }
+
+    public TransactionException(Throwable cause) {
+        super(cause);
+    }
+
+    public TransactionException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
