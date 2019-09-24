@@ -1,7 +1,5 @@
 package itAcademy.ORM.mapping.util;
 
-import itAcademy.ORM.connection.BaseDataSourceFactory;
-import itAcademy.ORM.connection.DataSourceFactory;
 import itAcademy.ORM.mapping.Field;
 import itAcademy.ORM.mapping.Table;
 import itAcademy.ORM.reflection.ReflectionAPI;
@@ -16,28 +14,27 @@ import java.util.List;
 public class Util {
 
 
-    private static Connection connection;
-
-    static {
-        DataSourceFactory dataSourceFactory = new BaseDataSourceFactory();
-        try {
-            connection = dataSourceFactory.getDataSource().getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void generateTables() throws SQLException {
         createDB("test");
         generateTables(ReflectionAPI.getAllEntities(""), "test");
     }
 
     private static void createDB(String dbName) throws SQLException {
-        Statement stmt = connection.createStatement();
-        stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS " + dbName);
+        String user = "root";
+        String password = "root";
+        String url = "jdbc:mysql://localhost:3306/?serverTimezone=EST5EDT";
+        try (Connection connection = DriverManager.getConnection(url, user, password);
+             Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS " + dbName);
+        }
+
     }
 
     private static void generateTables(List<Table> entities, String dbName) throws SQLException {
+        String user = "root";
+        String password = "root";
+        String url = "jdbc:mysql://localhost:3306/" + dbName + "?serverTimezone=EST5EDT";
+        Connection connection = DriverManager.getConnection(url, user, password);
         try (Statement preparedStatement = connection.createStatement()) {
             for (Table table : entities) {
                 StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS `");
