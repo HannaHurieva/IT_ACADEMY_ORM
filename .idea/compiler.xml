@@ -7,7 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="IT_ACADEMY_ORM" />
+        <module name="IT_ACADEMY_ORM_2" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="IT_ACADEMY_ORM_2" target="8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
