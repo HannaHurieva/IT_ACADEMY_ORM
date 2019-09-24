@@ -13,13 +13,20 @@ public class Test {
     @Id(autoIncremental = true, fieldName = "id")
     private int id;
 
-    @Constraint(referenceType = Reference.ONE_TO_MANY, fieldName = "user.id")
-    @Field(fieldName = "name")
-    private int name;
+    @Field(fieldName = "title")
+    private String title;
 
-    public Test(int id, int name) {
+    @Constraint(referenceType = Reference.ONE_TO_MANY, fieldName = "user.id")
+    @Field(fieldName = "username")
+    private int username;
+
+    public Test() {
+    }
+
+    public Test(int id, String title, int username) {
         this.id = id;
-        this.name = name;
+        this.title = title;
+        this.username = username;
     }
 
     public int getId() {
@@ -30,11 +37,19 @@ public class Test {
         this.id = id;
     }
 
-    public int getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(int name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getUsername() {
+        return username;
+    }
+
+    public void setUsername(int username) {
+        this.username = username;
     }
 }

@@ -1,14 +1,13 @@
 package itAcademy.ORM.mapping.util;
 
-import itAcademy.ORM.connection.BaseDataSourceFactory;
-import itAcademy.ORM.connection.DataSourceFactory;
+import itAcademy.ORM.connection.connectionpool.DBCPDataSourceFactory;
+import itAcademy.ORM.connection.connectionpool.DataSourceFactory;
 import itAcademy.ORM.mapping.Field;
 import itAcademy.ORM.mapping.Table;
 import itAcademy.ORM.reflection.ReflectionAPI;
 
 import java.lang.reflect.Type;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -19,7 +18,7 @@ public class Util {
     private static Connection connection;
 
     static {
-        DataSourceFactory dataSourceFactory = new BaseDataSourceFactory();
+        DataSourceFactory dataSourceFactory = new DBCPDataSourceFactory();
         try {
             connection = dataSourceFactory.getDataSource().getConnection();
         } catch (SQLException e) {

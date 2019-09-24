@@ -1,4 +1,4 @@
-package itAcademy.ORM.connection;
+package itAcademy.ORM.connection.connectionpool;
 
 import javax.sql.DataSource;
 
