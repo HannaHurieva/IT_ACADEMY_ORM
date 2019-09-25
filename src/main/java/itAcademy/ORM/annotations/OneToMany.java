@@ -9,11 +9,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({FIELD})
 @Retention(RUNTIME)
 public @interface OneToMany {
-    String fieldName();
 
-    String tableName();
+    int foreignKey();
 
-    String mappedBy() default "";
-
-    boolean autoIncremental() default false;
+    String targetTableName();
 }

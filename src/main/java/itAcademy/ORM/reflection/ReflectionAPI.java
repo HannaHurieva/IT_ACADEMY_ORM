@@ -2,7 +2,6 @@ package itAcademy.ORM.reflection;
 
 import itAcademy.ORM.annotations.Entity;
 import itAcademy.ORM.annotations.Id;
-import itAcademy.ORM.annotations.OneToOne;
 import itAcademy.ORM.mapping.Field;
 import itAcademy.ORM.mapping.Table;
 import org.reflections.Reflections;
@@ -13,7 +12,6 @@ import java.util.*;
 public class ReflectionAPI {
 
     private static List<Table> tables = new ArrayList<>();
-    private static Map<Object, Object> oneToOneReference = new HashMap<Object, Object>();
 
     public static List<Table> getAllEntities(String path) {
         Reflections ref = new Reflections(path);
@@ -70,40 +68,9 @@ public class ReflectionAPI {
         return fields;
     }
 
-    public static Map<Object, Object> getOneToOneDependency(String path, Object obj) {
-
-        Map<Object, Object> tablesReference = new LinkedHashMap<>();
+    public static void getOneToOneDependency(String path, Object obj) {
         Reflections reflection = new Reflections(path);
-        String primaryKey = null;
-        Object primaryKeyValue = null;
-        for (Class<?> valueAnotherTable : reflection.getTypesAnnotatedWith(OneToOne.class)) {
-            OneToOne findable = valueAnotherTable.getAnnotation(OneToOne.class);
-            for (java.lang.reflect.Field field : obj.getClass().getDeclaredFields()) {
-                if (!java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
-                    for (Annotation annotation : field.getDeclaredAnnotations()) {
-                        if (annotation.annotationType().equals(Id.class)) {
-                            primaryKey = field.getName();
-                            field.setAccessible(true);
-                            try {
-                                primaryKeyValue = field.get(obj);
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            }
-                        } else if (annotation.annotationType().equals(itAcademy.ORM.annotations.Field.class)) {
-                            field.setAccessible(true);
-                            try {
 
-                                ReflectionAPI.oneToOneReference.put(field.get(obj), field.get(obj));
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return tablesReference;
     }
 
     public static List<Table> getTables() {

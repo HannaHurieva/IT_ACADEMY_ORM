@@ -1,8 +1,5 @@
 package itAcademy.ORM.annotations;
 
-
-import itAcademy.ORM.mapping.Table;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -13,11 +10,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface OneToOne {
 
-    String fieldName();
+    int foreignKey();
 
-    String tableName();
+    String targetTableName();
 
-    String mappedBy() default "";
-
-    boolean autoIncremental() default false;
 }

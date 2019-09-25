@@ -1,10 +1,6 @@
 package itAcademy.ORM.test;
 
-
-import itAcademy.ORM.annotations.Constraint;
-import itAcademy.ORM.annotations.Entity;
-import itAcademy.ORM.annotations.Field;
-import itAcademy.ORM.annotations.Id;
+import itAcademy.ORM.annotations.*;
 import itAcademy.ORM.mapping.Reference;
 
 @Entity(tableName = "test")
