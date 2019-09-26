@@ -9,15 +9,15 @@ import java.util.Map;
 public class Table {
     private Type Entity;
     private String TableName;
-    private List<Field> fields;
+    private List<Column> columns;
     private Map<String, String> mapping;
 
-    public Table(Type entity, String tableName, List<Field> fields) {
+    public Table(Type entity, String tableName, List<Column> columns) {
         Entity = entity;
         TableName = tableName;
-        this.fields = fields;
+        this.columns = columns;
         mapping = new LinkedHashMap<>();
-        for(Field f: fields)
+        for(Column f: columns)
             mapping.put(f.getJavaName(),f.getDbName());
     }
 
@@ -29,12 +29,12 @@ public class Table {
         TableName = tableName;
     }
 
-    public List<Field> getFields() {
-        return fields;
+    public List<Column> getColumns() {
+        return columns;
     }
 
-    public void setFields(List<Field> fields) {
-        this.fields = fields;
+    public void setColumns(List<Column> columns) {
+        this.columns = columns;
     }
 
     public Type getEntity() {

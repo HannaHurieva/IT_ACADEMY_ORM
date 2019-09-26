@@ -2,7 +2,7 @@ package itAcademy.ORM.test;
 
 import itAcademy.ORM.annotations.Constraint;
 import itAcademy.ORM.annotations.Entity;
-import itAcademy.ORM.annotations.Field;
+import itAcademy.ORM.annotations.Column;
 import itAcademy.ORM.annotations.Id;
 import itAcademy.ORM.mapping.Reference;
 
@@ -12,11 +12,11 @@ public class User {
     @Id(autoIncremental = true, fieldName = "id")
     private int id;
 
-    @Field(fieldName = "name")
+    @Column(fieldName = "name")
     private String name;
 
     @Constraint(referenceType = Reference.ONE_TO_MANY, fieldName = "test.id")
-    @Field(fieldName = "test")
+    @Column(fieldName = "test")
     private int test;
 
     public User() {

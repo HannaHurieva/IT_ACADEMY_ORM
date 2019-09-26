@@ -2,7 +2,7 @@ package itAcademy.ORM.mapping.util;
 
 import itAcademy.ORM.connection.connectionpool.DBCPDataSourceFactory;
 import itAcademy.ORM.connection.connectionpool.DataSourceFactory;
-import itAcademy.ORM.mapping.Field;
+import itAcademy.ORM.mapping.Column;
 import itAcademy.ORM.mapping.Table;
 import itAcademy.ORM.reflection.ReflectionAPI;
 
@@ -27,37 +27,30 @@ public class Util {
     }
 
     public static void generateTables() throws SQLException {
-        createDB("test");
-        generateTables(ReflectionAPI.getAllEntities(""), "test");
+        generateTables(ReflectionAPI.getAllEntities(""));
     }
 
-    private static void createDB(String dbName) throws SQLException {
-        Statement stmt = connection.createStatement();
-        stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS " + dbName);
-    }
-
-    private static void generateTables(List<Table> entities, String dbName) throws SQLException {
+    private static void generateTables(List<Table> entities) throws SQLException {
         try (Statement preparedStatement = connection.createStatement()) {
             for (Table table : entities) {
                 StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS `");
                 sql.append(table.getTableName()).append("` (\n");
-                for (Field field : table.getFields()) {
-                    if (field.isPK()) {
-                        sql.append("`").append(field.getDbName()).append("` ").append(convertType(field.getType()));
-                        if (field.isAutoincrement()) sql.append(" AUTO_INCREMENT");
+                for (Column column : table.getColumns()) {
+                    if (column.isPK()) {
+                        sql.append("`").append(column.getDbName()).append("` ").append(convertType(column.getType()));
+                        if (column.isAutoincrement()) sql.append(" AUTO_INCREMENT");
                         sql.append(",\n");
-                        sql.append("PRIMARY KEY (`").append(field.getDbName()).append("`)");
+                        sql.append("PRIMARY KEY (`").append(column.getDbName()).append("`)");
                         sql.append(",");
                         sql.append("\n");
                     } else {
-                        sql.append("`").append(field.getDbName()).append("` ").append(convertType(field.getType()));
-                        if (field.isAutoincrement()) sql.append(" AUTO_INCREMENT");
+                        sql.append("`").append(column.getDbName()).append("` ").append(convertType(column.getType()));
+                        if (column.isAutoincrement()) sql.append(" AUTO_INCREMENT");
                         sql.append(",\n");
                     }
                 }
                 sql.deleteCharAt(sql.lastIndexOf(","));
                 sql.append(")");
-                System.out.println(sql.toString());
                 preparedStatement.addBatch(sql.toString());
             }
             preparedStatement.executeBatch();
