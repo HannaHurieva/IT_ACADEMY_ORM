@@ -68,11 +68,6 @@ public class ReflectionAPI {
         return fields;
     }
 
-    public static void getOneToOneDependency(String path, Object obj) {
-        Reflections reflection = new Reflections(path);
-
-    }
-
     public static List<Table> getTables() {
         return tables;
     }

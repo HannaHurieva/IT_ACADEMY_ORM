@@ -18,7 +18,7 @@ public class Table {
         this.fields = fields;
         mapping = new LinkedHashMap<>();
         for(Field f: fields)
-            mapping.put(f.getJavaName(),f.getDbName());
+            mapping.put(f.getFieldName(),f.getDbName());
     }
 
     public String getTableName() {

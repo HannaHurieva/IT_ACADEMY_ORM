@@ -3,23 +3,18 @@ package itAcademy.ORM.mapping;
 import java.lang.reflect.Type;
 
 public class Field {
-    private String javaName;
+    private String fieldName;
     private String dbName;
     private Type type;
-    private boolean isPrimaryKey;
-    private boolean isForeignKey;
+    private boolean isPK;
     private boolean autoincrement;
 
-    public Field(String javaName, String dbName, Type type, boolean isPrimaryKey, boolean isForeignKey, boolean autoincrement) {
-        this.javaName = javaName;
+    public Field(String javaName, String dbName, Type type, boolean isPK, boolean autoincrement) {
+        this.fieldName = javaName;
         this.dbName = dbName;
         this.type = type;
-        this.isPrimaryKey = isPrimaryKey;
-        this.isForeignKey = isForeignKey;
+        this.isPK = isPK;
         this.autoincrement = autoincrement;
-    }
-
-    public Field(String name, String s, Class<?> type, boolean b, boolean b1) {
     }
 
     public String getDbName() {
@@ -30,12 +25,12 @@ public class Field {
         this.dbName = dbName;
     }
 
-    public String getJavaName() {
-        return javaName;
+    public String getFieldName() {
+        return fieldName;
     }
 
-    public void setJavaName(String javaName) {
-        this.javaName = javaName;
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
     }
 
     public Type getType() {
@@ -46,12 +41,12 @@ public class Field {
         this.type = type;
     }
 
-    public boolean isPrimaryKey() {
-        return isPrimaryKey;
+    public boolean isPK() {
+        return isPK;
     }
 
-    public void setPrimaryKey(boolean primaryKey) {
-        isPrimaryKey = primaryKey;
+    public void setPK(boolean PK) {
+        isPK = PK;
     }
 
     public boolean isAutoincrement() {
@@ -60,13 +55,5 @@ public class Field {
 
     public void setAutoincrement(boolean autoincrement) {
         this.autoincrement = autoincrement;
-    }
-
-    public boolean isForeignKey() {
-        return isForeignKey;
-    }
-
-    public void setForeignKey(boolean foreignKey) {
-        isForeignKey = foreignKey;
     }
 }
