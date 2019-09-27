@@ -48,7 +48,7 @@ public class TransactionTest {
         test = new itAcademy.ORM.test.Test();
         test.setId(1);
         test.setUsername(12);
-        test.setTitle("Ivan");
+        test.setTitle("insert");
 
     }
 
@@ -67,9 +67,11 @@ public class TransactionTest {
     public void removeTest() throws SQLException, IllegalAccessException, InstantiationException, IOException, ReflectionException, NoSuchMethodException, InvocationTargetException {
         transaction.insert(test);
         transaction.commit();
+        ArrayList<Object> list = transaction.findAll(test.getClass());
+        assertEquals(list.size(), 1);
         transaction.delete(test);
         transaction.commit();
-        ArrayList<Object> list = transaction.findAll(test.getClass());
+        list = transaction.findAll(test.getClass());
         transaction.commit();
         assertEquals(list.size(), 0);
     }
@@ -78,13 +80,13 @@ public class TransactionTest {
     public void updateTest() throws SQLException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, ReflectionException, IOException, InstantiationException {
         transaction.insert(test);
         ArrayList<Object> list = transaction.findAll(test.getClass());
-        assertEquals(list.get(0), test);
-        test.setTitle("change");
+        assertEquals(((itAcademy.ORM.test.Test) list.get(0)).getTitle(), "insert");
+        test.setTitle("update");
         transaction.update(test);
         transaction.commit();
         list = transaction.findAll(test.getClass());
         transaction.commit();
-        assertEquals(list.get(0), test);
+        assertEquals(((itAcademy.ORM.test.Test) list.get(0)).getTitle(), "update");
         transaction.delete(test);
         transaction.commit();
     }
