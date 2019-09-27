@@ -1,5 +1,7 @@
 package itAcademy.ORM.annotation;
 
+import itAcademy.ORM.annotation.util.LoadingPolicy;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -7,12 +9,12 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Use of this annotation is not mandatory but
- * required when specifying custom dynamic data type
- * or a custom name for the column.
+ * Place this annotation on columns to create relationship of 1:1 cardinality
+ * between entities.
  */
 @Retention(RUNTIME)
 @Target(FIELD) // works only on class fields
-public @interface Column {
-    String columnName();
+public @interface OneToOne {
+    String targetBindingField() default "";
+    LoadingPolicy load() default LoadingPolicy.EAGER;
 }

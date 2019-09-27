@@ -7,12 +7,12 @@ import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Use of this annotation is not mandatory but
- * required when specifying custom dynamic data type
- * or a custom name for the column.
+ * Ensures that this column is not null while saving
+ * throws {@link itAcademy.ORM.annotation.exception.NotNullableFieldException} before saving
+ * if this column of the instance is null on insert and
+ * update operations.
  */
-@Retention(RUNTIME)
+ @Retention(RUNTIME)
 @Target(FIELD) // works only on class fields
-public @interface Column {
-    String columnName();
+public @interface NotNull {
 }

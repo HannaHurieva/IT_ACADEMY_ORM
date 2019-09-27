@@ -4,12 +4,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Target({FIELD, METHOD, TYPE})
 @Retention(RUNTIME)
+@Target(FIELD)
 public @interface ForeignKey {
     /**
      * Name of the foreign key.  Used in OneToMany, ManyToOne, and OneToOne
