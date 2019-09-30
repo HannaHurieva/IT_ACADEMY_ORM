@@ -45,6 +45,11 @@ class setCRUDOperations {
         test = new TestEntity();
     }
 
+    private void permanentDeleteChanges() throws InvocationTargetException, SQLException, ReflectionException, NoSuchMethodException, IllegalAccessException {
+        transaction.delete(test);
+        transaction.commit();
+    }
+
     void insert() throws InvocationTargetException, SQLException, ReflectionException, NoSuchMethodException, IllegalAccessException {
         setUp();
         test.setId(1);
@@ -52,5 +57,8 @@ class setCRUDOperations {
         test.setTitle("insert");
         transaction.insert(test);
         transaction.commit();
+        permanentDeleteChanges();
     }
+
+
 }
