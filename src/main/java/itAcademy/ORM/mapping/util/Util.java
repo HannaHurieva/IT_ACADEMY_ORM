@@ -5,6 +5,7 @@ import itAcademy.ORM.connection.connectionpool.DataSourceFactory;
 import itAcademy.ORM.mapping.Field;
 import itAcademy.ORM.mapping.Table;
 import itAcademy.ORM.reflection.ReflectionAPI;
+import itAcademy.ORM.support.DaoSupport;
 
 import java.lang.reflect.Type;
 import java.sql.Connection;
@@ -19,24 +20,15 @@ public class Util {
 
     static {
         DataSourceFactory dataSourceFactory = new DBCPDataSourceFactory();
-        try {
-            connection = dataSourceFactory.getDataSource().getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        connection = DaoSupport.getConnection(dataSourceFactory.getDataSource());
     }
 
     public static void generateTables() throws SQLException {
-        createDB("test");
-        generateTables(ReflectionAPI.getAllEntities(""), "test");
+        generateTables(ReflectionAPI.getAllEntities(""));
     }
 
-    private static void createDB(String dbName) throws SQLException {
-        Statement stmt = connection.createStatement();
-        stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS " + dbName);
-    }
 
-    private static void generateTables(List<Table> entities, String dbName) throws SQLException {
+    private static void generateTables(List<Table> entities) throws SQLException {
         try (Statement preparedStatement = connection.createStatement()) {
             for (Table table : entities) {
                 StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS `");
@@ -57,7 +49,6 @@ public class Util {
                 }
                 sql.deleteCharAt(sql.lastIndexOf(","));
                 sql.append(")");
-                System.out.println(sql.toString());
                 preparedStatement.addBatch(sql.toString());
             }
             preparedStatement.executeBatch();

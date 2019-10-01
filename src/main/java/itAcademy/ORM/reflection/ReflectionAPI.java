@@ -47,27 +47,6 @@ public class ReflectionAPI {
         return tableFields;
     }
 
-    public static Map<String, Object> getAnnotatedFields(Object obj) throws IllegalAccessException {
-        Map<String, Object> fields = new LinkedHashMap<>();
-        String pkField = null;
-        Object pkFieldValue = null;
-        for (java.lang.reflect.Field field : obj.getClass().getDeclaredFields()) {
-            if (!java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
-                for (Annotation annotation : field.getDeclaredAnnotations()) {
-                    if (annotation.annotationType().equals(Id.class)) {
-                        pkField = field.getName();
-                        field.setAccessible(true);
-                        pkFieldValue = field.get(obj);
-                    } else if (annotation.annotationType().equals(itAcademy.ORM.annotations.Field.class)) {
-                        field.setAccessible(true);
-                        fields.put(field.getName(), field.get(obj));
-                    }
-                }
-            }
-        }
-        return fields;
-    }
-
     public static List<Table> getTables() {
         return tables;
     }
