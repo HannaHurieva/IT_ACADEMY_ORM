@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import static itAcademy.ORM.sql.SQLCommands.*;
+
 public class Util {
 
 
@@ -33,19 +35,22 @@ public class Util {
     private static void generateTables(List<Table> entities) throws SQLException {
         try (Statement preparedStatement = connection.createStatement()) {
             for (Table table : entities) {
-                StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS `");
+                StringBuilder sql = new StringBuilder(CREATE_TABLE);
                 sql.append(table.getTableName()).append("` (\n");
                 for (Column column : table.getColumns()) {
                     if (column.isPK()) {
-                        sql.append("`").append(column.getDbName()).append("` ").append(convertType(column.getType()));
-                        if (column.isAutoincrement()) sql.append(" AUTO_INCREMENT");
+                        sql.append("`").append(column.getDbName()).append("` ")
+                                .append(convertType(column.getType()));
+                        if (column.isAutoincrement()) sql.append(AUTO_INCREMENT);
                         sql.append(",\n");
-                        sql.append("PRIMARY KEY (`").append(column.getDbName()).append("`)");
+                        sql.append(PRIMARY_KEY)
+                                .append(" (`").append(column.getDbName()).append("`)");
                         sql.append(",");
                         sql.append("\n");
                     } else {
-                        sql.append("`").append(column.getDbName()).append("` ").append(convertType(column.getType()));
-                        if (column.isAutoincrement()) sql.append(" AUTO_INCREMENT");
+                        sql.append("`").append(column.getDbName()).append("` ")
+                                .append(convertType(column.getType()));
+                        if (column.isAutoincrement()) sql.append(AUTO_INCREMENT);
                         sql.append(",\n");
                     }
                 }

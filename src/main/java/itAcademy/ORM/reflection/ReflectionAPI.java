@@ -7,6 +7,7 @@ import itAcademy.ORM.mapping.Table;
 import org.reflections.Reflections;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.*;
 
 public class ReflectionAPI {
@@ -47,25 +48,29 @@ public class ReflectionAPI {
         return tableColumns;
     }
 
-    public static Map<String, Object> getAnnotatedFields(Object obj) throws IllegalAccessException {
-        Map<String, Object> fields = new LinkedHashMap<>();
-        String pkField = null;
-        Object pkFieldValue = null;
-        for (java.lang.reflect.Field field : obj.getClass().getDeclaredFields()) {
-            if (!java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
-                for (Annotation annotation : field.getDeclaredAnnotations()) {
-                    if (annotation.annotationType().equals(Id.class)) {
-                        pkField = field.getName();
-                        field.setAccessible(true);
-                        pkFieldValue = field.get(obj);
-                    } else if (annotation.annotationType().equals(itAcademy.ORM.annotations.Column.class)) {
-                        field.setAccessible(true);
-                        fields.put(field.getName(), field.get(obj));
-                    }
-                }
+
+    public static void setField(Object object, String fieldName, Object value) throws IllegalAccessException, ReflectionException {
+        boolean noField = true;
+        for (Field field : object.getClass().getDeclaredFields()) {
+            if (field.getName().equals(fieldName)) {
+                field.setAccessible(true);
+                field.set(object, value);
+                noField = false;
             }
         }
-        return fields;
+        if (noField) {
+            throw new ReflectionException("No field");
+        }
+    }
+
+    public static Object getFieldValue(Object object, String fieldName) throws IllegalAccessException, ReflectionException {
+        for (Field field : object.getClass().getDeclaredFields()) {
+            if (field.getName().equals(fieldName)) {
+                field.setAccessible(true);
+                return field.get(object);
+            }
+        }
+        throw new ReflectionException("No field");
     }
 
     public static List<Table> getTables() {

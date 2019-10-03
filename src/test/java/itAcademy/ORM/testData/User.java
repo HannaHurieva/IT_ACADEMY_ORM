@@ -1,4 +1,4 @@
-package itAcademy.ORM.test;
+package itAcademy.ORM.testData;
 
 import itAcademy.ORM.annotations.Constraint;
 import itAcademy.ORM.annotations.Entity;
