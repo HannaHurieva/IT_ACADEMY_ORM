@@ -2,25 +2,51 @@ package itAcademy.ORM.transaction;
 
 import itAcademy.ORM.mapping.CRUD.Command;
 import itAcademy.ORM.mapping.CRUD.InsertCommand;
+import itAcademy.ORM.mapping.CRUD.CRUDOperations;
 import itAcademy.ORM.mapping.util.Util;
 import itAcademy.ORM.reflection.ReflectionException;
-import itAcademy.ORM.test.TestEntity;
-import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
-import static junit.framework.TestCase.assertEquals;
+import static itAcademy.ORM.mapping.StaticVariables.*;
+import static itAcademy.ORM.mapping.StaticVariables.DBCP_MAX_IDLE;
+import static itAcademy.ORM.mapping.StaticVariables.DBCP_MAX_OPEN_PREPARED_STATEMENTS;
+import static itAcademy.ORM.mapping.StaticVariables.DBCP_MIN_IDLE;
+import static itAcademy.ORM.mapping.StaticVariables.JDBC_DRIVER;
+import static itAcademy.ORM.mapping.StaticVariables.JDBC_PASSWORD;
+import static itAcademy.ORM.mapping.StaticVariables.JDBC_URL;
+import static itAcademy.ORM.mapping.StaticVariables.JDBC_USERNAME;
 
 public class TransactionTest {
+
+    private CRUDOperations crudOperations = new CRUDOperations();
+
+    @Before
+    public void getConnection() throws SQLException {
+        basicDataSource.setDriverClassName(JDBC_DRIVER);
+        basicDataSource.setUrl(JDBC_URL);
+        basicDataSource.setUsername(JDBC_USERNAME);
+        basicDataSource.setPassword(JDBC_PASSWORD);
+        basicDataSource.setMinIdle(DBCP_MIN_IDLE);
+        basicDataSource.setMaxIdle(DBCP_MAX_IDLE);
+        basicDataSource.setMaxOpenPreparedStatements(DBCP_MAX_OPEN_PREPARED_STATEMENTS);
+        basicDataSource.setMaxWait(-1L);
+        Util.generateTables();
+    }
 
     @Test
     public void insertTest() throws InvocationTargetException, SQLException, ReflectionException, NoSuchMethodException, IllegalAccessException, IOException, InstantiationException {
         Command command = new InsertCommand();
-        command.execute();
+        command.execute(crudOperations);
+    }
+
+    @Test
+    public void updateTest() throws InvocationTargetException, SQLException, ReflectionException, NoSuchMethodException, IllegalAccessException, IOException, InstantiationException {
+        Command command = new InsertCommand();
+        command.execute(crudOperations);
     }
 }

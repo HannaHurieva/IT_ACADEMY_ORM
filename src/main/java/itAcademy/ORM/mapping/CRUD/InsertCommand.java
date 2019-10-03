@@ -7,10 +7,8 @@ import java.sql.SQLException;
 
 public class InsertCommand implements Command {
 
-    private setCRUDOperations crudOperations = new setCRUDOperations();
-
     @Override
-    public void execute() throws IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException {
+    public void execute(CRUDOperations crudOperations) throws IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException {
         crudOperations.insert();
     }
 }
