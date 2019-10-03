@@ -1,10 +1,9 @@
 package itAcademy.ORM.transaction;
 
-import itAcademy.ORM.mapping.CRUD.Command;
-import itAcademy.ORM.mapping.CRUD.InsertCommand;
-import itAcademy.ORM.mapping.CRUD.CRUDOperations;
+import itAcademy.ORM.mapping.CRUD.*;
 import itAcademy.ORM.mapping.util.Util;
 import itAcademy.ORM.reflection.ReflectionException;
+import itAcademy.ORM.test.TestEntity;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,6 +35,7 @@ public class TransactionTest {
         basicDataSource.setMaxOpenPreparedStatements(DBCP_MAX_OPEN_PREPARED_STATEMENTS);
         basicDataSource.setMaxWait(-1L);
         Util.generateTables();
+        transaction = new BaseTransaction(basicDataSource.getConnection());
     }
 
     @Test
@@ -46,7 +46,13 @@ public class TransactionTest {
 
     @Test
     public void updateTest() throws InvocationTargetException, SQLException, ReflectionException, NoSuchMethodException, IllegalAccessException, IOException, InstantiationException {
-        Command command = new InsertCommand();
+        Command command = new UpdateCommand();
+        command.execute(crudOperations);
+    }
+
+    @Test
+    public void deleteTest() throws InvocationTargetException, SQLException, ReflectionException, NoSuchMethodException, IllegalAccessException, IOException, InstantiationException {
+        Command command = new DeleteCommand();
         command.execute(crudOperations);
     }
 }
