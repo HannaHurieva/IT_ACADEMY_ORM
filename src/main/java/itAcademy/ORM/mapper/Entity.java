@@ -6,17 +6,16 @@ import java.util.List;
 
 import itAcademy.ORM.annotation.ManyToMany;
 import itAcademy.ORM.annotation.PrimaryKey;
+import itAcademy.ORM.mapper.exceptions.EntityNotFoundException;
 import itAcademy.ORM.mapper.exceptions.FieldNotFoundException;
 import itAcademy.ORM.mapper.exceptions.NotAnEntityException;
 
-import javax.persistence.EntityNotFoundException;
+
 
 /**
  * Entity information holder for classes annotated with
  * {@link itAcademy.ORM.annotation.Entity}. It holds original class name,
  * generated table name, {@link Field}s of the entity.
- *
- * @author ahmet alp balkan <ahmetalpbalkan@gmail.com>
  */
 public class Entity {
     private Class<?> clazz;
