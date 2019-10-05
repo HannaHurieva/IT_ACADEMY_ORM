@@ -19,6 +19,8 @@ public class StaticVariables {
 
     public static final int DBCP_MAX_OPEN_PREPARED_STATEMENTS = 100;
 
+    public static final String INTERMEDIATE_VALUE_MY_SQL = "=?";
+
     public static BasicDataSource basicDataSource = new BasicDataSource();
 
     public static Transaction transaction;

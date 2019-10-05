@@ -13,30 +13,32 @@ public class CRUDOperations {
 
     private TestEntity entity = new TestEntity();
 
-    private void permanentDeleteChanges() throws InvocationTargetException, SQLException, ReflectionException, NoSuchMethodException, IllegalAccessException {
-        transaction.delete(entity);
-        transaction.commit();
-    }
+    //todo please add working implementation
 
     void insert() throws InvocationTargetException, SQLException, ReflectionException, NoSuchMethodException, IllegalAccessException {
-        entity.setId(2);
+        entity.setId(5);
         entity.setUsername(12);
         entity.setTitle("insert");
         transaction.insert(entity);
         transaction.commit();
-        permanentDeleteChanges();
     }
 
-    void update() throws SQLException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, ReflectionException, IOException, InstantiationException {
+    void update() throws SQLException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, ReflectionException {
+        entity.setUsername(111);
         entity.setTitle("update");
-        transaction.update(entity);
+        transaction.update(entity, 3);
         transaction.commit();
-        permanentDeleteChanges();
     }
 
-    void delete() throws SQLException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, ReflectionException, IOException, InstantiationException {
+    void delete() throws SQLException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, ReflectionException {
         entity.setTitle("delete");
         transaction.delete(entity);
+        transaction.commit();
+    }
+
+    void selectAll() throws SQLException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, ReflectionException, IOException, InstantiationException {
+        entity.setTitle("Select all");
+        transaction.findAll(entity);
         transaction.commit();
     }
 }

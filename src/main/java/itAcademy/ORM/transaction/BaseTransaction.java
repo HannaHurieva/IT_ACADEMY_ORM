@@ -14,7 +14,9 @@ import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BaseTransaction implements Transaction {
+import static itAcademy.ORM.mapping.StaticVariables.INTERMEDIATE_VALUE_MY_SQL;
+
+public class BaseTransaction implements itAcademy.ORM.transaction.Transaction {
 
     protected Connection connection;
     private Class idClass = Id.class;
@@ -30,39 +32,39 @@ public class BaseTransaction implements Transaction {
                 connection.setAutoCommit(autoCommit);
             }
         } catch (SQLException e) {
-            throw new TransactionException("Set auto commit error: " + e.getMessage(), e);
+            throw new itAcademy.ORM.transaction.TransactionException("Set auto commit error: " + e.getMessage(), e);
         }
     }
 
     @Override
-    public Connection open() throws TransactionException {
+    public Connection open() throws itAcademy.ORM.transaction.TransactionException {
         return connection;
     }
 
     @Override
-    public void commit() throws TransactionException {
+    public void commit() throws itAcademy.ORM.transaction.TransactionException {
         try {
             if (!connection.getAutoCommit()) {
                 connection.commit();
             }
         } catch (SQLException e) {
-            new TransactionException("Commit error: " + e.getMessage(), e);
+            new itAcademy.ORM.transaction.TransactionException("Commit error: " + e.getMessage(), e);
         }
     }
 
     @Override
-    public void rollback() throws TransactionException {
+    public void rollback() throws itAcademy.ORM.transaction.TransactionException {
         try {
             if (!connection.getAutoCommit()) {
                 connection.rollback();
             }
         } catch (SQLException e) {
-            throw new TransactionException("Rollback error: " + e.getMessage(), e);
+            throw new itAcademy.ORM.transaction.TransactionException("Rollback error: " + e.getMessage(), e);
         }
     }
 
     @Override
-    public void close() throws TransactionException {
+    public void close() throws itAcademy.ORM.transaction.TransactionException {
         try {
             if (!connection.getAutoCommit()) {
                 connection.setAutoCommit(true);
@@ -70,21 +72,20 @@ public class BaseTransaction implements Transaction {
             if (connection != null && !connection.isClosed())
                 connection.close();
         } catch (SQLException e) {
-            throw new TransactionException("Error closing SQL connection: " + e.getMessage(), e);
+            throw new itAcademy.ORM.transaction.TransactionException("Error closing SQL connection: " + e.getMessage(), e);
         }
     }
 
 
-    public Object update(Object obj) throws IllegalAccessException, SQLException {
+    public Object update(Object obj, int pkFieldValue) throws IllegalAccessException, SQLException {
         Map<String, Object> fields = new LinkedHashMap<>();
         String pkField = "";
-        Object pkFieldValue = null;
+
         for (Field field : obj.getClass().getDeclaredFields()) {
             if (!java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
                 if (field.isAnnotationPresent(Id.class)) {
                     pkField = field.getAnnotation(Id.class).fieldName();
                     field.setAccessible(true);
-                    pkFieldValue = field.get(obj);
                 } else if (field.isAnnotationPresent(itAcademy.ORM.annotations.Field.class)) {
                     field.setAccessible(true);
                     fields.put(field.getAnnotation(itAcademy.ORM.annotations.Field.class).fieldName(), field.get(obj));
@@ -93,25 +94,30 @@ public class BaseTransaction implements Transaction {
             }
         }
         Set<String> fieldsSet = fields.keySet();
-        String names = fieldsSet.stream().collect(Collectors.joining("=?,", "", "=?"));
-        String tableName = "";
+        String names = String.join(INTERMEDIATE_VALUE_MY_SQL + ",", fieldsSet);
+        String tableName = "test";
+
         for (Table t : ReflectionAPI.getTables()) {
             if (t.getEntity().getTypeName().equals(obj.getClass().getTypeName()))
                 tableName = t.getTableName();
         }
-        String sql = "update  " + tableName + " set " + names + " where " + pkField + "=?";
+        String sql = "update " + tableName + " set " + names + INTERMEDIATE_VALUE_MY_SQL + " where " + pkField + "=" + pkFieldValue;
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             Iterator<String> it = fieldsSet.iterator();
             int i = 1;
             while (it.hasNext()) {
-                Object value = fields.get(it.next());
-                preparedStatement.setObject(i, value);
+                preparedStatement.setObject(i, fields.get(it.next()));
                 ++i;
             }
-            preparedStatement.setObject(i, pkFieldValue);
             preparedStatement.executeUpdate();
         }
         return obj;
+    }
+
+    @Override
+    public ArrayList<Object> findAll(Object object) throws itAcademy.ORM.transaction.TransactionException {
+        return null;
     }
 
     @Override
@@ -143,7 +149,7 @@ public class BaseTransaction implements Transaction {
         String names = String.join(",", fieldsSet);
         String values = fieldsSet.stream().map(it -> "?").collect(Collectors.joining(","));
 
-        String tableName = "";
+        String tableName = "test";
         for (Table t : ReflectionAPI.getTables()) {
             if (t.getEntity().getTypeName().equals(obj.getClass().getTypeName()))
                 tableName = t.getTableName();

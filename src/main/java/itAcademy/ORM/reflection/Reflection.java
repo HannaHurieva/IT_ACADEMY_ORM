@@ -15,54 +15,6 @@ import java.util.jar.JarFile;
 
 public class Reflection {
 
-//
-//    public static ArrayList<String> getClassNamesFromPackage(String packageName) throws IOException, URISyntaxException {
-//        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-//        URL packageURL;
-//        ArrayList<String> names = new ArrayList<>();
-//        packageName = packageName.replace(".", "/");
-//        packageURL = classLoader.getResource(packageName);
-//        if (packageURL != null) {
-//            if (packageURL.getProtocol().equals("jar")) {
-//                String jarFileName = URLDecoder.decode(packageURL.getFile(), StandardCharsets.UTF_8);
-//                jarFileName = jarFileName.substring(5, jarFileName.indexOf("!"));
-//                JarFile jf = new JarFile(jarFileName);
-//                Enumeration<JarEntry> jarEntries = jf.entries();
-//                while (jarEntries.hasMoreElements()) {
-//                    String entryName = jarEntries.nextElement().getName();
-//                    if (entryName.startsWith(packageName) && entryName.length() > packageName
-//                            .length() + 5) {
-//                        entryName = entryName.substring(
-//                                packageName.length(), entryName.lastIndexOf('.')
-//                        );
-//                        names.add(entryName);
-//                    }
-//                }
-//            } else {
-//                URI uri = new URI(packageURL.toString());
-//                java.io.File folder = new java.io.File(uri.getPath());
-//                java.io.File[] files = folder.listFiles();
-//                String entryName;
-//                if (files != null) {
-//                    for (java.io.File actual : files) {
-//                        entryName = actual.getName();
-//                        if (entryName.lastIndexOf('.') != -1) {
-//                            entryName = entryName.substring(0, entryName.lastIndexOf('.'));
-//                            names.add(packageName.replace("/", ".") + "." + entryName);
-//                        } else {
-//                            ArrayList<String> ret = getClassNamesFromPackage(
-//                                    packageName.replace("/", ".") + "." + entryName
-//                            );
-//                            names.addAll(ret);
-//                        }
-//
-//                    }
-//                }
-//            }
-//        }
-//        return names;
-//    }
-
     public static void setField(Object object, String fieldName, Object value) throws IllegalAccessException, ReflectionException {
         boolean noField = true;
         for (Field field : object.getClass().getDeclaredFields()) {

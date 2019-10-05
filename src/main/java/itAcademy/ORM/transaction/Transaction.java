@@ -10,20 +10,20 @@ import java.util.ArrayList;
 
 public interface Transaction {
 
-    Connection open() throws TransactionException;
+    Connection open() throws itAcademy.ORM.transaction.TransactionException;
 
-    void commit() throws TransactionException;
+    void commit() throws itAcademy.ORM.transaction.TransactionException;
 
-    void rollback() throws TransactionException;
+    void rollback() throws itAcademy.ORM.transaction.TransactionException;
 
-    void close() throws TransactionException;
+    void close() throws itAcademy.ORM.transaction.TransactionException;
 
 
-    Object insert(Object object) throws TransactionException, IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException;
+    Object insert(Object object) throws itAcademy.ORM.transaction.TransactionException, IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException;
 
-    int delete(Object object) throws TransactionException, IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException;
+    int delete(Object object) throws itAcademy.ORM.transaction.TransactionException, IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException;
 
-    Object update(Object object) throws TransactionException, IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException;
+    Object update(Object object, int pkFieldValue) throws itAcademy.ORM.transaction.TransactionException, IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException;
 
-    ArrayList<Object> findAll(Class classObject) throws TransactionException, IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException, InstantiationException, IOException;
+    ArrayList<Object> findAll(Object object) throws itAcademy.ORM.transaction.TransactionException, IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException, InstantiationException, IOException;
 }
