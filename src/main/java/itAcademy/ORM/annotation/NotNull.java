@@ -8,7 +8,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Ensures that this column is not null while saving
- * throws {@link itAcademy.ORM.annotation.exception.NotNullableFieldException} before saving
+ * throws {@link itAcademy.ORM.mapper.exceptions.NotNullableFieldException} before saving
  * if this column of the instance is null on insert and
  * update operations.
  */

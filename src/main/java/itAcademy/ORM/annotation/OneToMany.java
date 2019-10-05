@@ -11,6 +11,18 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target(FIELD) // works only on class fields
 public @interface OneToMany {
+    /**
+     * Target type class.
+     * @return
+     */
+    Class<?> toType();
+
+    /**
+     * Target field to store this instance's id.
+     *
+     * @return
+     */
+    String onField();
 
     /**
      * Optionally, to fill target instance's related field

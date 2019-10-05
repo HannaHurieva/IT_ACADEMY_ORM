@@ -14,5 +14,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target(FIELD) // works only on class fields
 public @interface Column {
-    String columnName();
+    String name() default "";
 }

@@ -11,6 +11,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target(FIELD)
 public @interface ManyToMany {
+    /**
+     * Target type class.
+     * @return
+     */
+    Class<?> toType();
 
     /**
      * @return custom name for join table or empty string (do auto-binding)
