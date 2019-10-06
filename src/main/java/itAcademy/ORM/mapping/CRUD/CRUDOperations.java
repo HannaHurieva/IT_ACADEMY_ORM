@@ -13,8 +13,6 @@ public class CRUDOperations {
 
     private TestEntity entity = new TestEntity();
 
-    //todo please add working implementation
-
     void insert() throws InvocationTargetException, SQLException, ReflectionException, NoSuchMethodException, IllegalAccessException {
         entity.setId(5);
         entity.setUsername(12);

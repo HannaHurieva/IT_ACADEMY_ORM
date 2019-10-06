@@ -1,14 +1,15 @@
 package itAcademy.ORM.mapping.CRUD;
 
-import itAcademy.ORM.reflection.ReflectionException;
-
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
+import itAcademy.ORM.mapping.exception.CRUDException;
 
 public class InsertCommand implements Command {
 
     @Override
-    public void execute(CRUDOperations crudOperations) throws IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException {
-        crudOperations.insert();
+    public void execute(CRUDOperations crudOperations) throws CRUDException {
+        try {
+            crudOperations.insert();
+        } catch (Exception e) {
+            throw new CRUDException("Insert exception");
+        }
     }
 }

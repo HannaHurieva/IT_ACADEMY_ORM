@@ -1,15 +1,15 @@
 package itAcademy.ORM.mapping.CRUD;
 
-import itAcademy.ORM.reflection.ReflectionException;
+import itAcademy.ORM.mapping.exception.CRUDException;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
-
-public class UpdateCommand implements Command{
+public class UpdateCommand implements Command {
 
     @Override
-    public void execute(CRUDOperations crudOperations) throws IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException, IOException, InstantiationException {
-        crudOperations.update();
+    public void execute(CRUDOperations crudOperations) throws CRUDException {
+        try {
+            crudOperations.update();
+        } catch (Exception e) {
+            throw new CRUDException("Update exception");
+        }
     }
 }
