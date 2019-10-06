@@ -1,4 +1,4 @@
-package itAcademy.ORM.sql;
+package itAcademy.ORM.crud;
 
 public class SQLCommands {
     public static final String SELECT = "SELECT ";

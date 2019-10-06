@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import static itAcademy.ORM.sql.SQLCommands.*;
+import static itAcademy.ORM.crud.SQLCommands.*;
 
 public class Util {
 
@@ -28,11 +28,11 @@ public class Util {
         }
     }
 
-    public static void generateTables() throws SQLException {
-        generateTables(ReflectionAPI.getAllEntities(""));
+    public static void generateTables()  {
+            generateTables(ReflectionAPI.getAllEntities(""));
     }
 
-    private static void generateTables(List<Table> entities) throws SQLException {
+    private static void generateTables(List<Table> entities) {
         try (Statement preparedStatement = connection.createStatement()) {
             for (Table table : entities) {
                 StringBuilder sql = new StringBuilder(CREATE_TABLE);
@@ -60,6 +60,9 @@ public class Util {
             }
             preparedStatement.executeBatch();
         }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private static String convertType(Type type) {
@@ -81,7 +84,7 @@ public class Util {
                 DatabaseType = "FLOAT";
                 break;
             case "class java.util.Date":
-            case "class java.sql.Date":
+            case "class java.crud.Date":
                 DatabaseType = "DATETIME";
                 break;
             case "class java.lang.Boolean":
@@ -92,7 +95,7 @@ public class Util {
             case "int":
                 DatabaseType = "INT";
                 break;
-            case "class java.sql.Time":
+            case "class java.crud.Time":
                 DatabaseType = "TIME(6)";
                 break;
             default:

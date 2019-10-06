@@ -1,4 +1,4 @@
-package itAcademy.ORM.support;
+package itAcademy.ORM.connection.support;
 
 import itAcademy.ORM.connection.util.ObjectUtils;
 

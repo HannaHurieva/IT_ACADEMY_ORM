@@ -1,10 +1,8 @@
 package itAcademy.ORM.crud;
 
 import itAcademy.ORM.mapping.util.Util;
-import itAcademy.ORM.sql.CrudOperations;
-import itAcademy.ORM.sql.CrudOperationsImpl;
-import itAcademy.ORM.transaction.BaseTransaction;
-import itAcademy.ORM.transaction.Transaction;
+import itAcademy.ORM.connection.transaction.BaseTransaction;
+import itAcademy.ORM.connection.transaction.Transaction;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
