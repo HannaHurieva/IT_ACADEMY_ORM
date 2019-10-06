@@ -19,11 +19,11 @@ public interface Transaction {
     void close() throws itAcademy.ORM.transaction.TransactionException;
 
 
-    Object insert(Object object) throws itAcademy.ORM.transaction.TransactionException, IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException;
+    Object insert(Object object, String tableName) throws itAcademy.ORM.transaction.TransactionException, IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException;
 
-    int delete(Object object) throws itAcademy.ORM.transaction.TransactionException, IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException;
+    int delete(Object object, int wherePrimaryKeyValue, String tableName) throws itAcademy.ORM.transaction.TransactionException, IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException;
 
-    Object update(Object object, int pkFieldValue) throws itAcademy.ORM.transaction.TransactionException, IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException;
+    Object update(Object object, int wherePrimaryKeyFieldValue, String tableName) throws itAcademy.ORM.transaction.TransactionException, IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException;
 
     ArrayList<Object> findAll(Object object) throws itAcademy.ORM.transaction.TransactionException, IllegalAccessException, SQLException, ReflectionException, NoSuchMethodException, InvocationTargetException, InstantiationException, IOException;
 }

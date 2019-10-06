@@ -1,5 +1,6 @@
 package itAcademy.ORM.mapping.CRUD;
 
+import itAcademy.ORM.mapping.exception.CRUDException;
 import itAcademy.ORM.reflection.ReflectionException;
 import itAcademy.ORM.test.TestEntity;
 
@@ -13,25 +14,39 @@ public class CRUDOperations {
 
     private TestEntity entity = new TestEntity();
 
-    void insert() throws InvocationTargetException, SQLException, ReflectionException, NoSuchMethodException, IllegalAccessException {
-        entity.setId(5);
-        entity.setUsername(12);
-        entity.setTitle("insert");
-        transaction.insert(entity);
-        transaction.commit();
+    void insert() throws CRUDException {
+        try {
+            entity.setUsername(23);
+            entity.setTitle("Insert");
+            transaction.insert(entity, "test");
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            throw new CRUDException();
+        }
     }
 
-    void update() throws SQLException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, ReflectionException {
-        entity.setUsername(111);
-        entity.setTitle("update");
-        transaction.update(entity, 3);
-        transaction.commit();
+    void update() throws CRUDException {
+        try {
+            entity.setUsername(233);
+            entity.setTitle("Update");
+            transaction.update(entity, 5, "test");
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            throw new CRUDException();
+        }
     }
 
-    void delete() throws SQLException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, ReflectionException {
-        entity.setTitle("delete");
-        transaction.delete(entity);
-        transaction.commit();
+    void delete() throws CRUDException {
+        try {
+            entity.setTitle("Delete");
+            transaction.delete(entity, 9, "test");
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            throw new CRUDException();
+        }
     }
 
     void selectAll() throws SQLException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, ReflectionException, IOException, InstantiationException {

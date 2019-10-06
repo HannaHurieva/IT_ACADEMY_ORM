@@ -1,23 +1,12 @@
 package itAcademy.ORM.transaction;
 
 import itAcademy.ORM.mapping.CRUD.*;
-import itAcademy.ORM.mapping.util.Util;
-import itAcademy.ORM.reflection.ReflectionException;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 
 import static itAcademy.ORM.mapping.StaticVariables.*;
-import static itAcademy.ORM.mapping.StaticVariables.DBCP_MAX_IDLE;
-import static itAcademy.ORM.mapping.StaticVariables.DBCP_MAX_OPEN_PREPARED_STATEMENTS;
-import static itAcademy.ORM.mapping.StaticVariables.DBCP_MIN_IDLE;
-import static itAcademy.ORM.mapping.StaticVariables.JDBC_DRIVER;
-import static itAcademy.ORM.mapping.StaticVariables.JDBC_PASSWORD;
-import static itAcademy.ORM.mapping.StaticVariables.JDBC_URL;
-import static itAcademy.ORM.mapping.StaticVariables.JDBC_USERNAME;
 
 public class TransactionTest {
 
@@ -33,30 +22,29 @@ public class TransactionTest {
         basicDataSource.setMaxIdle(DBCP_MAX_IDLE);
         basicDataSource.setMaxOpenPreparedStatements(DBCP_MAX_OPEN_PREPARED_STATEMENTS);
         basicDataSource.setMaxWait(-1L);
-//        Util.generateTables();
         transaction = new itAcademy.ORM.transaction.BaseTransaction(basicDataSource.getConnection());
     }
 
     @Test
-    public void insertTest() throws InvocationTargetException, SQLException, ReflectionException, NoSuchMethodException, IllegalAccessException, IOException, InstantiationException {
+    public void insertTest() {
         Command command = new InsertCommand();
         command.execute(crudOperations);
     }
 
     @Test
-    public void updateTest() throws InvocationTargetException, SQLException, ReflectionException, NoSuchMethodException, IllegalAccessException, IOException, InstantiationException {
+    public void updateTest() {
         Command command = new UpdateCommand();
         command.execute(crudOperations);
     }
 
     @Test
-    public void deleteTest() throws InvocationTargetException, SQLException, ReflectionException, NoSuchMethodException, IllegalAccessException, IOException, InstantiationException {
+    public void deleteTest() {
         Command command = new DeleteCommand();
         command.execute(crudOperations);
     }
 
     @Test
-    public void selectAllTest() throws InvocationTargetException, SQLException, ReflectionException, NoSuchMethodException, IllegalAccessException, IOException, InstantiationException {
+    public void selectAllTest() {
         Command command = new SelectCommand();
         command.execute(crudOperations);
     }

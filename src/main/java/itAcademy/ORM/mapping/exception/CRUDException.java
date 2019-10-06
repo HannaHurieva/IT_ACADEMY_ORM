@@ -5,6 +5,12 @@ public class CRUDException extends RuntimeException {
     public CRUDException() {
     }
 
+    /**
+     * Constructs a CRUDException using the specified information.
+     *
+     * @param message The message explaining the exception condition
+     */
+
     public CRUDException(String message) {
         super(message);
     }
