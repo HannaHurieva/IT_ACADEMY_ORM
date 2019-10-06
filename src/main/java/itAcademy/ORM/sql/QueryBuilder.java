@@ -11,16 +11,12 @@ import java.util.Map.Entry;
 
 
 /**
- * Used to build pure SQL queries. If you are interested to build SQL queries
- * with existing persistent old Java classes (@Entity classes)
+ * Used to build pure SQL queries.
  * <p>
  * Has a private constructor and an instance can be obtained with getBuilder()
  * method or select(), insert(), update() or delete() methods.
  * <p>
  * Supports chain queries. Use getQuery() method to obtain {@link Query} object.
- * <p>
- * {@link itAcademy.ORM.annotation.Entity}-annotated classes and their
- * fields.
  */
 public class QueryBuilder {
 

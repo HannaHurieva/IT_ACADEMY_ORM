@@ -11,16 +11,13 @@ import org.junit.Test;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 
 import static itAcademy.ORM.testData.Connection.*;
 import static junit.framework.TestCase.assertEquals;
 
 public class QueryInsertTest {
     private Transaction transaction;
-
-    private itAcademy.ORM.testData.Student student;
-
-    private CrudOperations crudOperations;
 
     @Before
     public void setUp() throws Exception {
@@ -35,7 +32,6 @@ public class QueryInsertTest {
         basicDataSource.setMaxWait(-1L);
         Util.generateTables();
         transaction = new BaseTransaction(basicDataSource.getConnection());
-        crudOperations = new CrudOperationsImpl();
     }
 
     @Test
@@ -47,6 +43,35 @@ public class QueryInsertTest {
         Query q = new Query(QueryType.INSERT).addTable("std");
         q.setField("last_name", "'Hurieva'");
         q.setField("first_name", "'Hanna'");
+        q.setField("gpa", 8.0d);
+        System.out.println(q.getExecutableSql());
+        statement.execute(q.getExecutableSql());
+
+        Query query = new Query(QueryType.SELECT);
+        query.addTable("std");
+        DataField field = new DataField("*");
+        query.addField(field);
+
+        ResultSet result = statement.executeQuery(query.getExecutableSql());
+        result.last();
+        assertEquals(result.getRow(), 1);
+        transaction.close();
+    }
+
+    @Test
+    public void shouldInsertObjectIntoTable() throws Exception {
+        Statement statement = transaction.open().createStatement();
+        String sql = "TRUNCATE TABLE std ";
+        statement.execute(sql);
+
+        Query q = new Query(QueryType.INSERT).addTable("std");
+        q.setField("last_name", "'LastName'");
+        q.setField("first_name", "'FirstName'");
+
+        java.text.SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        java.util.Date date = dateFormat.parse("2019-09-06 00:00:00");
+        String dateSQL = dateFormat.format(date);
+        q.setField("date_of_registration", "'" + dateSQL + "'");
         q.setField("gpa", 10.0d);
         System.out.println(q.getExecutableSql());
         statement.execute(q.getExecutableSql());

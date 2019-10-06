@@ -4,12 +4,7 @@ import itAcademy.ORM.sql.exceptions.DuplicateSubclauseException;
 import itAcademy.ORM.sql.subclauses.ISubclause;
 import itAcademy.ORM.sql.subclauses.SubclauseType;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 
 
 public class Query extends Criterion {
@@ -44,12 +39,9 @@ public class Query extends Criterion {
      * Way to execute native DBMS queries. Overrides all other
      * query builder methods and custom query settings.
      *
-     * <p>Warning: This may cause security vulnerabilities. Use
-     * at your own risk.</p>
-     *
      * @param nativeQuery
      */
-    public Query(String nativeQuery){
+    public Query(String nativeQuery) {
         this.nativeQuery = nativeQuery;
     }
 
@@ -86,7 +78,7 @@ public class Query extends Criterion {
     }
 
     public void addSubclause(SubclauseType t, ISubclause s) {
-        if(this.subclauses.get(t) != null)
+        if (this.subclauses.get(t) != null)
             throw new DuplicateSubclauseException(t.toString());
         this.subclauses.put(t, s);
     }
@@ -115,7 +107,7 @@ public class Query extends Criterion {
         this.database = database;
     }
 
-    public void setField(String field, Object value){
+    public void setField(String field, Object value) {
         valuedFieldMap.put(field, value.toString());
     }
 
@@ -132,7 +124,7 @@ public class Query extends Criterion {
      * and passing query to it.
      */
     @Override
-    public String toString(){
+    public String toString() {
         if (nativeQuery != null) return nativeQuery;
         return QueryBuilder.getBuilder(this).prepareSql();
     }
@@ -140,7 +132,7 @@ public class Query extends Criterion {
     /**
      * Get executable query (preceeded by semicolon)
      */
-    public String getExecutableSql(){
+    public String getExecutableSql() {
         return new StringBuffer(this.toString()).append(';').toString();
     }
 

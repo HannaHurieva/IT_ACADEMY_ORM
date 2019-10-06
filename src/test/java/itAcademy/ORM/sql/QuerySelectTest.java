@@ -61,7 +61,7 @@ public class QuerySelectTest {
     }
 
     @Test
-    public void shouldSelectDataIntoTable() throws Exception {
+    public void shouldSelectDataFromTable() throws Exception {
         Statement statement = transaction.open().createStatement();
         String sql = "TRUNCATE TABLE std ";
         statement.execute(sql);
@@ -76,8 +76,6 @@ public class QuerySelectTest {
 
         Query query = new Query(QueryType.SELECT);
         query.addTable("std");
-        DataField field = new DataField("*");
-        query.addField(field);
         System.out.println(query.getExecutableSql());
 
         ResultSet result = statement.executeQuery(query.getExecutableSql());
@@ -87,6 +85,35 @@ public class QuerySelectTest {
                     + " " + result.getString(5));
         }
 
+        result.last();
+        assertEquals(result.getRow(), 3);
+        transaction.close();
+    }
+
+    @Test
+    public void shouldSelectOneColumnFromTable() throws Exception {
+        Statement statement = transaction.open().createStatement();
+        String sql = "TRUNCATE TABLE std ";
+        statement.execute(sql);
+
+        transaction.open();
+        crudOperations.insert(student);
+        transaction.commit();
+        crudOperations.insert(student1);
+        transaction.commit();
+        crudOperations.insert(student2);
+        transaction.commit();
+
+        Query query = new Query(QueryType.SELECT);
+        query.addTable("std");
+        DataField field = new DataField("last_name");
+        query.addField(field);
+        System.out.println(query.getExecutableSql());
+
+        ResultSet result = statement.executeQuery(query.getExecutableSql());
+        while (result.next()) {
+            System.out.println(result.getString(1));
+        }
         result.last();
         assertEquals(result.getRow(), 3);
         transaction.close();
