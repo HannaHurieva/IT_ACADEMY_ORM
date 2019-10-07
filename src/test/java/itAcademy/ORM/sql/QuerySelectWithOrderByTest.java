@@ -5,7 +5,6 @@ import itAcademy.ORM.connection.transaction.Transaction;
 import itAcademy.ORM.mapping.util.Util;
 import itAcademy.ORM.sql.subclauses.OrderByClause;
 import itAcademy.ORM.sql.subclauses.SubclauseType;
-import itAcademy.ORM.sql.subclauses.WhereClause;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +42,7 @@ public class QuerySelectWithOrderByTest {
         q2.setField("last_name", "'Dolenko'");
         q2.setField("first_name", "'Yulia'");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        java.util.Date  date = dateFormat.parse("2019-09-06 10:00:00");
+        java.util.Date date = dateFormat.parse("2019-09-06 10:00:00");
         String dateSQL = dateFormat.format(date);
         q2.setField("date_of_registration", "'" + dateSQL + "'");
         q2.setField("gpa", 10.0d);
@@ -92,12 +91,12 @@ public class QuerySelectWithOrderByTest {
 
             String actual = result.getString(1) + " " + result.getString(2);
             String expected = "Hurieva Hanna";
-            assertEquals(actual,expected);
+            assertEquals(actual, expected);
 
             result.first();
             actual = result.getString(1) + " " + result.getString(2);
             expected = "Dolenko Yulia";
-            assertEquals(actual,expected);
+            assertEquals(actual, expected);
             transaction.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -123,12 +122,12 @@ public class QuerySelectWithOrderByTest {
 
             String actual = result.getString(1) + " " + result.getString(2);
             String expected = "Dolenko Yulia";
-            assertEquals(actual,expected);
+            assertEquals(actual, expected);
 
             result.first();
             actual = result.getString(1) + " " + result.getString(2);
             expected = "Hurieva Hanna";
-            assertEquals(actual,expected);
+            assertEquals(actual, expected);
             transaction.close();
         } catch (SQLException e) {
             e.printStackTrace();

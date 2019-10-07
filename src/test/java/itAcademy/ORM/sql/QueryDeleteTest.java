@@ -3,8 +3,8 @@ package itAcademy.ORM.sql;
 import itAcademy.ORM.connection.transaction.BaseTransaction;
 import itAcademy.ORM.connection.transaction.Transaction;
 import itAcademy.ORM.mapping.util.Util;
-import itAcademy.ORM.sql.subclauses.LimitClause;
 import itAcademy.ORM.sql.subclauses.SubclauseType;
+import itAcademy.ORM.sql.subclauses.WhereClause;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import static itAcademy.ORM.testData.Connection.*;
 import static junit.framework.TestCase.assertEquals;
 
-public class QuerySelectWithLimitTest {
+public class QueryDeleteTest {
     private Transaction transaction;
     private Statement statement;
 
@@ -40,11 +40,11 @@ public class QuerySelectWithLimitTest {
         Query q = new Query(QueryType.INSERT).addTable("std");
         q.setField("last_name", "'Hurieva'");
         q.setField("first_name", "'Hanna'");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        java.text.SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         java.util.Date date = dateFormat.parse("2019-09-06 12:00:00");
         String dateSQL = dateFormat.format(date);
         q.setField("date_of_registration", "'" + dateSQL + "'");
-        q.setField("gpa", 8.0d);
+        q.setField("gpa", 10.0d);
         statement.execute(q.getExecutableSql());
         System.out.println(q.getExecutableSql());
 
@@ -54,7 +54,7 @@ public class QuerySelectWithLimitTest {
         date = dateFormat.parse("2019-09-06 14:00:00");
         dateSQL = dateFormat.format(date);
         q1.setField("date_of_registration", "'" + dateSQL + "'");
-        q1.setField("gpa", 10.0d);
+        q1.setField("gpa", 8.0d);
         statement.execute(q1.getExecutableSql());
         System.out.println(q1.getExecutableSql());
 
@@ -64,62 +64,41 @@ public class QuerySelectWithLimitTest {
         date = dateFormat.parse("2019-09-06 10:00:00");
         dateSQL = dateFormat.format(date);
         q2.setField("date_of_registration", "'" + dateSQL + "'");
-        q2.setField("gpa", 10.0d);
+        q2.setField("gpa", 9.0d);
         statement.execute(q2.getExecutableSql());
         System.out.println(q2.getExecutableSql());
         transaction.commit();
     }
 
     @Test
-    public void shouldSelectWithLimitDataFromTable() throws Exception {
+    public void shouldDeleteObjectByIdFromTable() throws Exception {
+        Query q = new Query(QueryType.DELETE).addTable("std");
+        q.addSubclause(SubclauseType.WHERE, new WhereClause(new DataField("std_id = 1")));
+        System.out.println(q.getExecutableSql());
+        statement.execute(q.getExecutableSql());
+
         Query query = new Query(QueryType.SELECT);
         query.addTable("std");
-        query.addSubclause(SubclauseType.LIMIT, new LimitClause(3));
-        System.out.println(query.getExecutableSql());
-
         ResultSet result = statement.executeQuery(query.getExecutableSql());
-        while (result.next()) {
-            System.out.println(result.getString(1) + " " + result.getString(2) +
-                    " " + result.getString(3) + " " + result.getString(4)
-                    + " " + result.getString(5));
-        }
-        result.last();
-        assertEquals(result.getRow(), 3);
-        transaction.close();
-    }
-
-    @Test
-    public void shouldSelectOneColumnWithLimitFromTable() throws Exception {
-        Query query = new Query(QueryType.SELECT);
-        query.addTable("std");
-        query.addField(new DataField("last_name"));
-        query.addSubclause(SubclauseType.LIMIT, new LimitClause(2, 1));
-        System.out.println(query.getExecutableSql());
-
-        ResultSet result = statement.executeQuery(query.getExecutableSql());
-        while (result.next()) {
-            System.out.println(result.getString(1));
-        }
         result.last();
         assertEquals(result.getRow(), 2);
         transaction.close();
     }
 
     @Test
-    public void shouldSelectSomeColumnsWithLimitFromTable() throws Exception {
+    public void shouldDeleteObjectWithWhereFromTable() throws Exception {
+        Query q = new Query(QueryType.DELETE).addTable("std");
+        q.addSubclause(SubclauseType.WHERE, new WhereClause(new DataField("gpa < 9.0")));
+        System.out.println(q.getExecutableSql());
+        statement.execute(q.getExecutableSql());
+
         Query query = new Query(QueryType.SELECT);
         query.addTable("std");
-        query.addField(new DataField("last_name"));
-        query.addField(new DataField("gpa"));
-        query.addSubclause(SubclauseType.LIMIT, new LimitClause(1, 2));
-        System.out.println(query.getExecutableSql());
-
         ResultSet result = statement.executeQuery(query.getExecutableSql());
-        while (result.next()) {
-            System.out.println(result.getString(1) + " " + result.getString(2));
-        }
         result.last();
-        assertEquals(result.getRow(), 1);
+        assertEquals(result.getRow(), 2);
         transaction.close();
     }
+
+
 }

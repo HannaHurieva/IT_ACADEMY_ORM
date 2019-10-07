@@ -8,8 +8,7 @@ public enum QueryFieldOperation {
     AVG("AVG(%s)"),
     AVG_DISTINCT("AVG(DISTINCT %s)"),
     MIN("MIN(%s)"),
-    MAX("MAX(%s)"),
-    SIGN("SIGN(%s)");
+    MAX("MAX(%s)");
 
     private String representation;
 

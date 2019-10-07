@@ -3,8 +3,8 @@ package itAcademy.ORM.sql;
 import itAcademy.ORM.connection.transaction.BaseTransaction;
 import itAcademy.ORM.connection.transaction.Transaction;
 import itAcademy.ORM.mapping.util.Util;
-import itAcademy.ORM.sql.subclauses.LimitClause;
 import itAcademy.ORM.sql.subclauses.SubclauseType;
+import itAcademy.ORM.sql.subclauses.WhereClause;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import static itAcademy.ORM.testData.Connection.*;
 import static junit.framework.TestCase.assertEquals;
 
-public class QuerySelectWithLimitTest {
+public class QueryUpdateTest {
     private Transaction transaction;
     private Statement statement;
 
@@ -64,17 +64,25 @@ public class QuerySelectWithLimitTest {
         date = dateFormat.parse("2019-09-06 10:00:00");
         dateSQL = dateFormat.format(date);
         q2.setField("date_of_registration", "'" + dateSQL + "'");
-        q2.setField("gpa", 10.0d);
+        q2.setField("gpa", 9.0d);
         statement.execute(q2.getExecutableSql());
         System.out.println(q2.getExecutableSql());
         transaction.commit();
     }
 
     @Test
-    public void shouldSelectWithLimitDataFromTable() throws Exception {
-        Query query = new Query(QueryType.SELECT);
+    public void shouldUpdateDataWithWhereIntoTable() throws Exception {
+        Query query = new Query(QueryType.UPDATE);
         query.addTable("std");
-        query.addSubclause(SubclauseType.LIMIT, new LimitClause(3));
+        query.setField("gpa", 10.0);
+        query.addSubclause(SubclauseType.WHERE, new WhereClause(new DataField("last_name = 'Hurieva'")));
+        System.out.println(query.getExecutableSql());
+
+        statement.execute(query.getExecutableSql());
+
+        query = new Query(QueryType.SELECT);
+        query.addTable("std");
+        query.addSubclause(SubclauseType.WHERE, new WhereClause(new DataField("last_name = 'Hurieva'")));
         System.out.println(query.getExecutableSql());
 
         ResultSet result = statement.executeQuery(query.getExecutableSql());
@@ -84,42 +92,44 @@ public class QuerySelectWithLimitTest {
                     + " " + result.getString(5));
         }
         result.last();
-        assertEquals(result.getRow(), 3);
+        Double actual = Double.parseDouble(result.getString(5));
+        Double expected = 10.0;
+        assertEquals(actual, expected);
         transaction.close();
     }
 
     @Test
-    public void shouldSelectOneColumnWithLimitFromTable() throws Exception {
-        Query query = new Query(QueryType.SELECT);
+    public void shouldUpdateDataIntoTable() throws Exception {
+        Query query = new Query(QueryType.UPDATE);
         query.addTable("std");
-        query.addField(new DataField("last_name"));
-        query.addSubclause(SubclauseType.LIMIT, new LimitClause(2, 1));
+        query.setField("gpa", 10.0);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        java.util.Date date = dateFormat.parse("2019-10-06 12:00:00");
+        String dateSQL = dateFormat.format(date);
+        query.setField("date_of_registration", "'" + dateSQL + "'");
+        query.addSubclause(SubclauseType.WHERE, new WhereClause(new DataField("last_name = 'Dolenko'")));
+        System.out.println(query.getExecutableSql());
+
+        statement.execute(query.getExecutableSql());
+
+        query = new Query(QueryType.SELECT);
+        query.addTable("std");
         System.out.println(query.getExecutableSql());
 
         ResultSet result = statement.executeQuery(query.getExecutableSql());
         while (result.next()) {
-            System.out.println(result.getString(1));
+            System.out.println(result.getString(1) + " " + result.getString(2) +
+                    " " + result.getString(3) + " " + result.getString(4)
+                    + " " + result.getString(5));
         }
         result.last();
-        assertEquals(result.getRow(), 2);
-        transaction.close();
-    }
+        Double actual = Double.parseDouble(result.getString(5));
+        Double expected = 10.0;
+        assertEquals(actual, expected);
 
-    @Test
-    public void shouldSelectSomeColumnsWithLimitFromTable() throws Exception {
-        Query query = new Query(QueryType.SELECT);
-        query.addTable("std");
-        query.addField(new DataField("last_name"));
-        query.addField(new DataField("gpa"));
-        query.addSubclause(SubclauseType.LIMIT, new LimitClause(1, 2));
-        System.out.println(query.getExecutableSql());
-
-        ResultSet result = statement.executeQuery(query.getExecutableSql());
-        while (result.next()) {
-            System.out.println(result.getString(1) + " " + result.getString(2));
-        }
-        result.last();
-        assertEquals(result.getRow(), 1);
+        String act = result.getString(4);
+        String exp = "2019-10-06 12:00:00";
+        assertEquals(actual, expected);
         transaction.close();
     }
 }
