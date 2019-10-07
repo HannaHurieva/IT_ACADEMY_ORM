@@ -1,6 +1,7 @@
 package itAcademy.ORM.crud;
 
 import itAcademy.ORM.annotations.Id;
+import itAcademy.ORM.annotations.ManyToOne;
 import itAcademy.ORM.annotations.OneToOne;
 import itAcademy.ORM.connection.connectionpool.DBCPDataSourceFactory;
 import itAcademy.ORM.connection.support.DaoSupport;
@@ -287,6 +288,9 @@ public class CrudOperationsImpl implements CrudOperations {
                 if (field.isAnnotationPresent(OneToOne.class)) {
                     fields.put(field.getDeclaredAnnotation(OneToOne.class).fieldName(), field.get(obj));
                 }
+                if (field.isAnnotationPresent(ManyToOne.class)) {
+                    fields.put(field.getDeclaredAnnotation(ManyToOne.class).fieldName(), field.get(obj));
+                }
             }
             return this;
         }
@@ -322,8 +326,10 @@ public class CrudOperationsImpl implements CrudOperations {
                         pkFieldValue = field.get(obj);
                     } else if (field.isAnnotationPresent(itAcademy.ORM.annotations.Column.class)) {
                         fields.put(field.getAnnotation(itAcademy.ORM.annotations.Column.class).fieldName(), field.get(obj));
-                    }else if (field.isAnnotationPresent(OneToOne.class)) {
+                    } else if (field.isAnnotationPresent(OneToOne.class)) {
                         fields.put(field.getDeclaredAnnotation(OneToOne.class).fieldName(), field.get(obj));
+                    } else if (field.isAnnotationPresent(ManyToOne.class)) {
+                        fields.put(field.getDeclaredAnnotation(ManyToOne.class).fieldName(), field.get(obj));
                     }
                 }
             }

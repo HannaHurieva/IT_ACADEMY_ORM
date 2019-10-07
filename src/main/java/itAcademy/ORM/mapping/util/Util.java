@@ -30,17 +30,20 @@ public class Util {
     }
 
     public static void generateTables() {
-        generateTables(ReflectionAPI.getAllEntities(""));
-        alterTable(ReflectionAPI.getAllEntities(""));
+        List<Table> entity = ReflectionAPI.getAllEntities("");
+        generateTables(entity);
+        alterTable(entity);
     }
 
     private static void alterTable(List<Table> entities) {
         try (Statement preparedStatement = connection.createStatement()) {
+            boolean needToAlter = false;
             for (Table table : entities) {
                 StringBuilder sql = new StringBuilder(ALTER_TABLE);
                 sql.append(table.getTableName());
                 for (Column column : table.getColumns()) {
                     if (column.isFK()) {
+                        needToAlter = true;
                         Reference reference = column.getReference();
                         sql.append(NEXT_LINE).append(ADD_FOREIGN_KEY).append(LEFT_BRACKET)
                                 .append(reference.getFieldName()).append(RIGHT_BRACKET)
@@ -50,7 +53,8 @@ public class Util {
                 }
                 preparedStatement.addBatch(sql.toString());
             }
-            preparedStatement.executeBatch();
+            if (needToAlter)
+                preparedStatement.executeBatch();
         } catch (SQLException e) {
             e.printStackTrace();
         }

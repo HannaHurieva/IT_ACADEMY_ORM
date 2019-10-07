@@ -52,4 +52,13 @@ public class Table {
         return mapping;
     }
 
+    @Override
+    public String toString() {
+        return "Table{" +
+                "Entity=" + Entity +
+                ", TableName='" + TableName + '\'' +
+                ", columns=" + columns +
+                ", mapping=" + mapping +
+                '}';
+    }
 }
