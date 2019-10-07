@@ -1,13 +1,14 @@
 package itAcademy.ORM.testData;
 
-import itAcademy.ORM.annotations.Constraint;
 import itAcademy.ORM.annotations.Entity;
 import itAcademy.ORM.annotations.Column;
 import itAcademy.ORM.annotations.Id;
-import itAcademy.ORM.mapping.Reference;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 @Entity(tableName = "user")
-public class User {
+public class User implements Serializable {
 
     @Id(autoIncremental = true, fieldName = "id")
     private int id;
@@ -15,7 +16,6 @@ public class User {
     @Column(fieldName = "name")
     private String name;
 
-    @Constraint(referenceType = Reference.ONE_TO_MANY, fieldName = "test.id")
     @Column(fieldName = "test")
     private int test;
 
@@ -50,5 +50,20 @@ public class User {
 
     public void setTest(int test) {
         this.test = test;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id &&
+                test == user.test &&
+                Objects.equals(name, user.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, test);
     }
 }

@@ -22,7 +22,10 @@ public class SQLCommands {
     public static final String NEXT_LINE = "\n";
     public static final String QUOTE = "`";
     public static final String TAB = " ";
-
+    public static final String SEMICOLON = ";";
+    public static final String ADD_FOREIGN_KEY = "ADD FOREIGN KEY ";
+    public static final String REFERENCES = " REFERENCES ";
+    public static final String ALTER_TABLE = "ALTER TABLE ";
 
 
 }

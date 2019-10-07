@@ -1,6 +1,7 @@
 package itAcademy.ORM.crud;
 
 import itAcademy.ORM.annotations.Id;
+import itAcademy.ORM.annotations.OneToOne;
 import itAcademy.ORM.connection.connectionpool.DBCPDataSourceFactory;
 import itAcademy.ORM.connection.support.DaoSupport;
 import itAcademy.ORM.mapping.Column;
@@ -29,14 +30,14 @@ public class CrudOperationsImpl implements CrudOperations {
         Map<String, Object> fields = new LinkedHashMap<>();
         HelperUpdate helperUpdate = null;
         try {
-            helperUpdate = new HelperUpdate(obj, fields, "", null).invoke();
+            helperUpdate = new HelperUpdate(obj, fields, EMPTY_STRING, null).invoke();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
         String pkField = helperUpdate.getPkField();
         Object pkFieldValue = helperUpdate.getPkFieldValue();
         Set<String> fieldsSet = fields.keySet();
-        String names = fieldsSet.stream().collect(Collectors.joining("=?,", "", "=?"));
+        String names = fieldsSet.stream().collect(Collectors.joining(INTERMEDIATE_VALUE_MY_SQL + COMMA, EMPTY_STRING, INTERMEDIATE_VALUE_MY_SQL));
         String tableName = getTableName(obj);
         String sql = UPDATE + tableName + SET + names + WHERE + pkField + "=?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -71,7 +72,7 @@ public class CrudOperationsImpl implements CrudOperations {
         String names = String.join(COMMA, fieldsSet);
         String values = fieldsSet.stream().map(it -> QUESTION_MARK).collect(Collectors.joining(COMMA));
         String tableName = getTableName(obj);
-        String sql = INSERT + INTO + tableName + LEFT_BRACKET + names + RIGHT_BRACKET + VALUES + LEFT_BRACKET + values + RIGHT_BRACKET + ";";
+        String sql = INSERT + INTO + tableName + LEFT_BRACKET + names + RIGHT_BRACKET + VALUES + LEFT_BRACKET + values + RIGHT_BRACKET + SEMICOLON;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             Iterator<String> it = fieldsSet.iterator();
             int i = 1;
@@ -108,7 +109,7 @@ public class CrudOperationsImpl implements CrudOperations {
             while (r.next()) {
                 Object row = classObject.newInstance();
                 for (Column column : t.getColumns()) {
-                    Object value = r.getObject(column.getDbName());
+                    Object value = r.getObject(column.getFieldsType());
                     setFields(row, column, value);
                 }
                 ret.add(row);
@@ -204,9 +205,9 @@ public class CrudOperationsImpl implements CrudOperations {
                     targetString.append((char) intValueOfChar);
                 }
                 reader.close();
-                ReflectionAPI.setField(row, column.getJavaName(), targetString.toString());
+                ReflectionAPI.setField(row, column.getFieldsName(), targetString.toString());
             } else {
-                ReflectionAPI.setField(row, column.getJavaName(), value);
+                ReflectionAPI.setField(row, column.getFieldsName(), value);
             }
         } catch (IllegalAccessException | SQLException | IOException | ReflectionException e) {
             e.printStackTrace();
@@ -219,7 +220,7 @@ public class CrudOperationsImpl implements CrudOperations {
             if (names.length() > 0) {
                 names.append(COMMA);
             }
-            names.append(column.getDbName());
+            names.append(column.getFieldsType());
         }
         return names.toString();
     }
@@ -283,6 +284,9 @@ public class CrudOperationsImpl implements CrudOperations {
                 if (field.isAnnotationPresent(itAcademy.ORM.annotations.Column.class)) {
                     fields.put(field.getAnnotation(itAcademy.ORM.annotations.Column.class).fieldName(), field.get(obj));
                 }
+                if (field.isAnnotationPresent(OneToOne.class)) {
+                    fields.put(field.getDeclaredAnnotation(OneToOne.class).fieldName(), field.get(obj));
+                }
             }
             return this;
         }
@@ -312,13 +316,14 @@ public class CrudOperationsImpl implements CrudOperations {
         HelperUpdate invoke() throws IllegalAccessException {
             for (Field field : obj.getClass().getDeclaredFields()) {
                 if (!java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+                    field.setAccessible(true);
                     if (field.isAnnotationPresent(Id.class)) {
                         pkField = field.getAnnotation(Id.class).fieldName();
-                        field.setAccessible(true);
                         pkFieldValue = field.get(obj);
                     } else if (field.isAnnotationPresent(itAcademy.ORM.annotations.Column.class)) {
-                        field.setAccessible(true);
                         fields.put(field.getAnnotation(itAcademy.ORM.annotations.Column.class).fieldName(), field.get(obj));
+                    }else if (field.isAnnotationPresent(OneToOne.class)) {
+                        fields.put(field.getDeclaredAnnotation(OneToOne.class).fieldName(), field.get(obj));
                     }
                 }
             }

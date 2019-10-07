@@ -12,13 +12,16 @@ public class Table {
     private List<Column> columns;
     private Map<String, String> mapping;
 
+    public Table() {
+    }
+
     public Table(Type entity, String tableName, List<Column> columns) {
         Entity = entity;
         TableName = tableName;
         this.columns = columns;
         mapping = new LinkedHashMap<>();
         for(Column f: columns)
-            mapping.put(f.getJavaName(),f.getDbName());
+            mapping.put(f.getFieldsName(),f.getFieldsType());
     }
 
     public String getTableName() {
