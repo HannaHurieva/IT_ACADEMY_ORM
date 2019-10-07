@@ -1,7 +1,6 @@
 package itAcademy.ORM.sql.subclauses;
 
 import itAcademy.ORM.sql.Criterion;
-import itAcademy.ORM.sql.subclauses.ISubclause;
 
 public class HavingClause implements ISubclause {
 
@@ -9,7 +8,7 @@ public class HavingClause implements ISubclause {
 
     private Criterion conditional;
 
-    public HavingClause(Criterion criterion){
+    public HavingClause(Criterion criterion) {
         this.conditional = criterion;
     }
 

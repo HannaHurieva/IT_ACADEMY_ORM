@@ -5,7 +5,7 @@ public class TableConstraint {
     private TableConstraintType type;
     private Object[] values;
 
-    public TableConstraint(TableConstraintType type, Object... values){
+    public TableConstraint(TableConstraintType type, Object... values) {
         this.type = type;
         this.values = values;
     }

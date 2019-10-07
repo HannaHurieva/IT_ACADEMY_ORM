@@ -8,12 +8,12 @@ public enum SubclauseType {
 
     private static Map<String, SubclauseType> lookup = new HashMap<String, SubclauseType>();
 
-    static{
-        for(SubclauseType t: values())
+    static {
+        for (SubclauseType t : values())
             lookup.put(t.toString().toUpperCase(), t);
     }
 
-    public static SubclauseType lookup(String clauseName){
+    public static SubclauseType lookup(String clauseName) {
         return lookup.get(clauseName.toUpperCase());
     }
 }

@@ -4,7 +4,7 @@ public class DataField extends Criterion implements IQueryField {
     private String fieldName;
     private String alias;
 
-    public DataField(String fieldName){
+    public DataField(String fieldName) {
         this.fieldName = fieldName;
     }
 
@@ -18,7 +18,7 @@ public class DataField extends Criterion implements IQueryField {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(this.fieldName);
 
-        if(alias != null){
+        if (alias != null) {
             stringBuilder.append(" as ");
             stringBuilder.append(this.alias);
         }

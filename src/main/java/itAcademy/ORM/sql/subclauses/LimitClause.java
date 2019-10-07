@@ -1,7 +1,5 @@
 package itAcademy.ORM.sql.subclauses;
 
-import itAcademy.ORM.sql.subclauses.ISubclause;
-
 public class LimitClause implements ISubclause {
 
     private static final String format = "LIMIT %d, %d";
@@ -9,11 +7,11 @@ public class LimitClause implements ISubclause {
     private int count;
     private int start;
 
-    public LimitClause(int recordCount){
+    public LimitClause(int recordCount) {
         this(recordCount, 0);
     }
 
-    public LimitClause(int recordCount, int startOffset){
+    public LimitClause(int recordCount, int startOffset) {
         this.start = startOffset;
         this.count = recordCount;
     }
