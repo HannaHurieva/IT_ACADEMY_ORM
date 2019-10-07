@@ -3,6 +3,7 @@ package itAcademy.ORM.mapping.util;
 import itAcademy.ORM.connection.connectionpool.DBCPDataSourceFactory;
 import itAcademy.ORM.connection.connectionpool.DataSourceFactory;
 import itAcademy.ORM.mapping.Column;
+import itAcademy.ORM.mapping.Reference;
 import itAcademy.ORM.mapping.Table;
 import itAcademy.ORM.reflection.ReflectionAPI;
 
@@ -28,39 +29,61 @@ public class Util {
         }
     }
 
-    public static void generateTables()  {
-            generateTables(ReflectionAPI.getAllEntities(""));
+    public static void generateTables() {
+        generateTables(ReflectionAPI.getAllEntities(""));
+        alterTable(ReflectionAPI.getAllEntities(""));
+    }
+
+    private static void alterTable(List<Table> entities) {
+        try (Statement preparedStatement = connection.createStatement()) {
+            for (Table table : entities) {
+                StringBuilder sql = new StringBuilder(ALTER_TABLE);
+                sql.append(table.getTableName());
+                for (Column column : table.getColumns()) {
+                    if (column.isFK()) {
+                        Reference reference = column.getReference();
+                        sql.append(NEXT_LINE).append(ADD_FOREIGN_KEY).append(LEFT_BRACKET)
+                                .append(reference.getFieldName()).append(RIGHT_BRACKET)
+                                .append(REFERENCES).append(reference.getToTable()).append(LEFT_BRACKET)
+                                .append(reference.getToTableFieldName()).append(RIGHT_BRACKET);
+                    }
+                }
+                preparedStatement.addBatch(sql.toString());
+            }
+            preparedStatement.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void generateTables(List<Table> entities) {
         try (Statement preparedStatement = connection.createStatement()) {
             for (Table table : entities) {
                 StringBuilder sql = new StringBuilder(CREATE_TABLE);
-                sql.append(table.getTableName()).append("` (\n");
+                sql.append(table.getTableName()).append(QUOTE)
+                        .append(LEFT_BRACKET).append(NEXT_LINE);
                 for (Column column : table.getColumns()) {
                     if (column.isPK()) {
-                        sql.append("`").append(column.getDbName()).append("` ")
+                        sql.append(QUOTE).append(column.getFieldsType()).append(QUOTE).append(TAB)
                                 .append(convertType(column.getType()));
                         if (column.isAutoincrement()) sql.append(AUTO_INCREMENT);
-                        sql.append(",\n");
-                        sql.append(PRIMARY_KEY)
-                                .append(" (`").append(column.getDbName()).append("`)");
-                        sql.append(",");
-                        sql.append("\n");
+                        sql.append(COMMA).append(NEXT_LINE);
+                        sql.append(PRIMARY_KEY).append(LEFT_BRACKET).append(QUOTE)
+                                .append(column.getFieldsType()).append(QUOTE).append(RIGHT_BRACKET);
+                        sql.append(COMMA).append(NEXT_LINE);
                     } else {
-                        sql.append("`").append(column.getDbName()).append("` ")
-                                .append(convertType(column.getType()));
+                        sql.append(QUOTE).append(column.getFieldsType()).append(QUOTE)
+                                .append(TAB).append(convertType(column.getType()));
                         if (column.isAutoincrement()) sql.append(AUTO_INCREMENT);
-                        sql.append(",\n");
+                        sql.append(COMMA).append(NEXT_LINE);
                     }
                 }
-                sql.deleteCharAt(sql.lastIndexOf(","));
-                sql.append(")");
+                sql.deleteCharAt(sql.lastIndexOf(COMMA));
+                sql.append(RIGHT_BRACKET);
                 preparedStatement.addBatch(sql.toString());
             }
             preparedStatement.executeBatch();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

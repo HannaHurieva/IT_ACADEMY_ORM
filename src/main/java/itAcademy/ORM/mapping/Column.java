@@ -3,34 +3,38 @@ package itAcademy.ORM.mapping;
 import java.lang.reflect.Type;
 
 public class Column {
-    private String javaName;
-    private String dbName;
+    private String fieldsName;
+    private String fieldsType;
     private Type type;
     private boolean isPK;
+    private boolean isFK;
     private boolean autoincrement;
+    private Reference reference;
 
-    public Column(String javaName, String dbName, Type type, boolean isPK, boolean autoincrement) {
-        this.javaName = javaName;
-        this.dbName = dbName;
+    public Column(String fieldsName, String fieldsType, Type type, boolean isPK, boolean isFK, boolean autoincrement, Reference reference) {
+        this.fieldsName = fieldsName;
+        this.fieldsType = fieldsType;
         this.type = type;
         this.isPK = isPK;
+        this.isFK = isFK;
         this.autoincrement = autoincrement;
+        this.reference = reference;
     }
 
-    public String getDbName() {
-        return dbName;
+    public String getFieldsName() {
+        return fieldsName;
     }
 
-    public void setDbName(String dbName) {
-        this.dbName = dbName;
+    public void setFieldsName(String fieldsName) {
+        this.fieldsName = fieldsName;
     }
 
-    public String getJavaName() {
-        return javaName;
+    public String getFieldsType() {
+        return fieldsType;
     }
 
-    public void setJavaName(String javaName) {
-        this.javaName = javaName;
+    public void setFieldsType(String fieldsType) {
+        this.fieldsType = fieldsType;
     }
 
     public Type getType() {
@@ -49,11 +53,27 @@ public class Column {
         isPK = PK;
     }
 
+    public boolean isFK() {
+        return isFK;
+    }
+
+    public void setFK(boolean FK) {
+        isFK = FK;
+    }
+
     public boolean isAutoincrement() {
         return autoincrement;
     }
 
     public void setAutoincrement(boolean autoincrement) {
         this.autoincrement = autoincrement;
+    }
+
+    public Reference getReference() {
+        return reference;
+    }
+
+    public void setReference(Reference reference) {
+        this.reference = reference;
     }
 }

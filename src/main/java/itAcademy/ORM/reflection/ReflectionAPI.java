@@ -2,13 +2,15 @@ package itAcademy.ORM.reflection;
 
 import itAcademy.ORM.annotations.Entity;
 import itAcademy.ORM.annotations.Id;
+import itAcademy.ORM.annotations.OneToOne;
 import itAcademy.ORM.mapping.Column;
+import itAcademy.ORM.mapping.Reference;
 import itAcademy.ORM.mapping.Table;
 import org.reflections.Reflections;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReflectionAPI {
 
@@ -26,6 +28,7 @@ public class ReflectionAPI {
 
     private static List<Column> getAnnotatedFields(final Class<?> clazz) {
         List<Column> tableColumns = new ArrayList<>();
+        Table t = new Table();
         java.lang.reflect.Field[] fields = clazz.getDeclaredFields();
         for (java.lang.reflect.Field field : fields) {
             try {
@@ -33,13 +36,21 @@ public class ReflectionAPI {
                     if (field.isAnnotationPresent(itAcademy.ORM.annotations.Column.class)) {
                         tableColumns.add(new Column(field.getName(), field.
                                 getAnnotation(itAcademy.ORM.annotations.Column.class).
-                                fieldName(), field.getType(), false, field.
-                                getAnnotation(itAcademy.ORM.annotations.Column.class).autoIncremental()));
+                                fieldName(), field.getType(), false, false, field.
+                                getAnnotation(itAcademy.ORM.annotations.Column.class).autoIncremental(), null));
                     } else if (field.isAnnotationPresent(Id.class)) {
                         tableColumns.add(new Column(field.getName(), field.
                                 getAnnotation(Id.class).
-                                fieldName(), field.getType(), true, field.
-                                getAnnotation(Id.class).autoIncremental()));
+                                fieldName(), field.getType(), true, false, field.
+                                getAnnotation(Id.class).autoIncremental(), null));
+                    }else if (field.isAnnotationPresent(OneToOne.class)) {
+                        Reference reference = new Reference(field.getAnnotation(OneToOne.class).fieldName(),
+                                field.getAnnotation(OneToOne.class).toTable(),
+                                field.getAnnotation(OneToOne.class).toTableFieldName());
+                        tableColumns.add(new Column(field.getName(), field.
+                                getAnnotation(OneToOne.class).
+                                fieldName(), field.getType(), false, true, field.
+                                getAnnotation(OneToOne.class).autoIncremental(), reference));
                     }
             } catch (SecurityException ignored) {
             }
@@ -76,4 +87,5 @@ public class ReflectionAPI {
     public static List<Table> getTables() {
         return tables;
     }
+
 }

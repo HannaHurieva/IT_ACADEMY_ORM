@@ -8,7 +8,7 @@ public class Connection {
 
     public static final String JDBC_USERNAME = "root";
 
-    public static final String JDBC_PASSWORD = "password";
+    public static final String JDBC_PASSWORD = "root";
 
     public static final int DBCP_MIN_IDLE = 5;
 

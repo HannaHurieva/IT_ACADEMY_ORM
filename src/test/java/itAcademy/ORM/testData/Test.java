@@ -1,11 +1,10 @@
 package itAcademy.ORM.testData;
 
 
-import itAcademy.ORM.annotations.Constraint;
-import itAcademy.ORM.annotations.Entity;
 import itAcademy.ORM.annotations.Column;
+import itAcademy.ORM.annotations.Entity;
 import itAcademy.ORM.annotations.Id;
-import itAcademy.ORM.mapping.Reference;
+import itAcademy.ORM.annotations.OneToOne;
 
 import java.util.Objects;
 
@@ -19,9 +18,8 @@ public class Test {
     @Column(fieldName = "title")
     private String title;
 
-    @Constraint(referenceType = Reference.ONE_TO_MANY, fieldName = "user.id")
-    @Column(fieldName = "username")
-    private int username;
+    @OneToOne(fieldName = "user_id", toTable = "user", toTableFieldName = "id")
+    private Integer userId;
 
     public Test() {
     }
@@ -42,14 +40,13 @@ public class Test {
         this.title = title;
     }
 
-    public int getUsername() {
-        return username;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUsername(int username) {
-        this.username = username;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -57,21 +54,12 @@ public class Test {
         if (o == null || getClass() != o.getClass()) return false;
         Test test = (Test) o;
         return id == test.id &&
-                username == test.username &&
+                userId == test.userId &&
                 Objects.equals(title, test.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, username);
-    }
-
-    @Override
-    public String toString() {
-        return "Test{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", username=" + username +
-                '}';
+        return Objects.hash(id, title, userId);
     }
 }

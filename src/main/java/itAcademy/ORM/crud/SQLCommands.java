@@ -13,6 +13,19 @@ public class SQLCommands {
     public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `";
     public static final String AUTO_INCREMENT = " AUTO_INCREMENT";
     public static final String PRIMARY_KEY = " PRIMARY KEY";
+    public static final String INTERMEDIATE_VALUE_MY_SQL = "=?";
+    public static final String LEFT_BRACKET = " (";
+    public static final String RIGHT_BRACKET = ") ";
+    public static final String COMMA = ",";
+    public static final String EMPTY_STRING = "";
+    public static final String QUESTION_MARK = "?";
+    public static final String NEXT_LINE = "\n";
+    public static final String QUOTE = "`";
+    public static final String TAB = " ";
+    public static final String SEMICOLON = ";";
+    public static final String ADD_FOREIGN_KEY = "ADD FOREIGN KEY ";
+    public static final String REFERENCES = " REFERENCES ";
+    public static final String ALTER_TABLE = "ALTER TABLE ";
 
 
 }
