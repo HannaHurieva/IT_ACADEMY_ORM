@@ -2,14 +2,14 @@ package itAcademy.ORM.mapping;
 
 import java.lang.reflect.Type;
 
-public class Field {
+public class Column {
     private String javaName;
     private String dbName;
     private Type type;
     private boolean isPK;
     private boolean autoincrement;
 
-    public Field(String javaName, String dbName, Type type, boolean isPK, boolean autoincrement) {
+    public Column(String javaName, String dbName, Type type, boolean isPK, boolean autoincrement) {
         this.javaName = javaName;
         this.dbName = dbName;
         this.type = type;

@@ -2,16 +2,17 @@ package itAcademy.ORM.mapping.util;
 
 import itAcademy.ORM.connection.connectionpool.DBCPDataSourceFactory;
 import itAcademy.ORM.connection.connectionpool.DataSourceFactory;
-import itAcademy.ORM.mapping.Field;
+import itAcademy.ORM.mapping.Column;
 import itAcademy.ORM.mapping.Table;
 import itAcademy.ORM.reflection.ReflectionAPI;
-import itAcademy.ORM.support.DaoSupport;
 
 import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+
+import static itAcademy.ORM.crud.SQLCommands.*;
 
 public class Util {
 
@@ -20,30 +21,36 @@ public class Util {
 
     static {
         DataSourceFactory dataSourceFactory = new DBCPDataSourceFactory();
-        connection = DaoSupport.getConnection(dataSourceFactory.getDataSource());
+        try {
+            connection = dataSourceFactory.getDataSource().getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void generateTables() throws SQLException {
-        generateTables(ReflectionAPI.getAllEntities(""));
+    public static void generateTables()  {
+            generateTables(ReflectionAPI.getAllEntities(""));
     }
 
-
-    private static void generateTables(List<Table> entities) throws SQLException {
+    private static void generateTables(List<Table> entities) {
         try (Statement preparedStatement = connection.createStatement()) {
             for (Table table : entities) {
-                StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS `");
+                StringBuilder sql = new StringBuilder(CREATE_TABLE);
                 sql.append(table.getTableName()).append("` (\n");
-                for (Field field : table.getFields()) {
-                    if (field.isPK()) {
-                        sql.append("`").append(field.getDbName()).append("` ").append(convertType(field.getType()));
-                        if (field.isAutoincrement()) sql.append(" AUTO_INCREMENT");
+                for (Column column : table.getColumns()) {
+                    if (column.isPK()) {
+                        sql.append("`").append(column.getDbName()).append("` ")
+                                .append(convertType(column.getType()));
+                        if (column.isAutoincrement()) sql.append(AUTO_INCREMENT);
                         sql.append(",\n");
-                        sql.append("PRIMARY KEY (`").append(field.getDbName()).append("`)");
+                        sql.append(PRIMARY_KEY)
+                                .append(" (`").append(column.getDbName()).append("`)");
                         sql.append(",");
                         sql.append("\n");
                     } else {
-                        sql.append("`").append(field.getDbName()).append("` ").append(convertType(field.getType()));
-                        if (field.isAutoincrement()) sql.append(" AUTO_INCREMENT");
+                        sql.append("`").append(column.getDbName()).append("` ")
+                                .append(convertType(column.getType()));
+                        if (column.isAutoincrement()) sql.append(AUTO_INCREMENT);
                         sql.append(",\n");
                     }
                 }
@@ -52,6 +59,9 @@ public class Util {
                 preparedStatement.addBatch(sql.toString());
             }
             preparedStatement.executeBatch();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -74,7 +84,7 @@ public class Util {
                 DatabaseType = "FLOAT";
                 break;
             case "class java.util.Date":
-            case "class java.sql.Date":
+            case "class java.crud.Date":
                 DatabaseType = "DATETIME";
                 break;
             case "class java.lang.Boolean":
@@ -85,7 +95,7 @@ public class Util {
             case "int":
                 DatabaseType = "INT";
                 break;
-            case "class java.sql.Time":
+            case "class java.crud.Time":
                 DatabaseType = "TIME(6)";
                 break;
             default:

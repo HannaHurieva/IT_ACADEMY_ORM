@@ -1,9 +1,8 @@
-package itAcademy.ORM.transaction;
+package itAcademy.ORM.connection.transaction;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 
-public class BaseTransaction implements Transation {
+public class BaseTransaction implements Transaction {
 
     protected Connection connection;
 
@@ -11,7 +10,7 @@ public class BaseTransaction implements Transation {
         this.connection = connection;
     }
 
-    public BaseTransaction(Connection connection, boolean autoCommit) {
+    BaseTransaction(Connection connection, boolean autoCommit) {
         this.connection = connection;
         try {
             if (connection.getAutoCommit() != autoCommit) {
@@ -61,4 +60,7 @@ public class BaseTransaction implements Transation {
             throw new TransactionException("Error closing SQL connection: " + e.getMessage(), e);
         }
     }
+
+
+
 }

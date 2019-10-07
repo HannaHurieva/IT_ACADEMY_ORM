@@ -9,5 +9,8 @@
         <module name="IT_ACADEMY_ORM" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="IT_ACADEMY_ORM" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>

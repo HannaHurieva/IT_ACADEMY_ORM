@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Id {
+    String fieldName() default "id";
     boolean autoIncremental() default false;
-    String fieldName();
 }

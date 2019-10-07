@@ -2,11 +2,12 @@ package itAcademy.ORM.reflection;
 
 import itAcademy.ORM.annotations.Entity;
 import itAcademy.ORM.annotations.Id;
-import itAcademy.ORM.mapping.Field;
+import itAcademy.ORM.mapping.Column;
 import itAcademy.ORM.mapping.Table;
 import org.reflections.Reflections;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.*;
 
 public class ReflectionAPI {
@@ -23,19 +24,19 @@ public class ReflectionAPI {
         return tables;
     }
 
-    private static List<Field> getAnnotatedFields(final Class<?> clazz) {
-        List<Field> tableFields = new ArrayList<>();
+    private static List<Column> getAnnotatedFields(final Class<?> clazz) {
+        List<Column> tableColumns = new ArrayList<>();
         java.lang.reflect.Field[] fields = clazz.getDeclaredFields();
         for (java.lang.reflect.Field field : fields) {
             try {
                 if (!java.lang.reflect.Modifier.isStatic(field.getModifiers()))
-                    if (field.isAnnotationPresent(itAcademy.ORM.annotations.Field.class)) {
-                        tableFields.add(new Field(field.getName(), field.
-                                getAnnotation(itAcademy.ORM.annotations.Field.class).
+                    if (field.isAnnotationPresent(itAcademy.ORM.annotations.Column.class)) {
+                        tableColumns.add(new Column(field.getName(), field.
+                                getAnnotation(itAcademy.ORM.annotations.Column.class).
                                 fieldName(), field.getType(), false, field.
-                                getAnnotation(itAcademy.ORM.annotations.Field.class).autoIncremental()));
+                                getAnnotation(itAcademy.ORM.annotations.Column.class).autoIncremental()));
                     } else if (field.isAnnotationPresent(Id.class)) {
-                        tableFields.add(new Field(field.getName(), field.
+                        tableColumns.add(new Column(field.getName(), field.
                                 getAnnotation(Id.class).
                                 fieldName(), field.getType(), true, field.
                                 getAnnotation(Id.class).autoIncremental()));
@@ -44,7 +45,32 @@ public class ReflectionAPI {
             }
 
         }
-        return tableFields;
+        return tableColumns;
+    }
+
+
+    public static void setField(Object object, String fieldName, Object value) throws IllegalAccessException, ReflectionException {
+        boolean noField = true;
+        for (Field field : object.getClass().getDeclaredFields()) {
+            if (field.getName().equals(fieldName)) {
+                field.setAccessible(true);
+                field.set(object, value);
+                noField = false;
+            }
+        }
+        if (noField) {
+            throw new ReflectionException("No field");
+        }
+    }
+
+    public static Object getFieldValue(Object object, String fieldName) throws IllegalAccessException, ReflectionException {
+        for (Field field : object.getClass().getDeclaredFields()) {
+            if (field.getName().equals(fieldName)) {
+                field.setAccessible(true);
+                return field.get(object);
+            }
+        }
+        throw new ReflectionException("No field");
     }
 
     public static List<Table> getTables() {

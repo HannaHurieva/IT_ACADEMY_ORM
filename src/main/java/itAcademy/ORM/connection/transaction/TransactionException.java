@@ -1,4 +1,4 @@
-package itAcademy.ORM.transaction;
+package itAcademy.ORM.connection.transaction;
 
 public class TransactionException extends RuntimeException {
     private static final long serialVersionUID = 1L;
