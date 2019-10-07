@@ -58,7 +58,7 @@ public class QuerySelectWithWhereTest {
         System.out.println(q1.getExecutableSql());
 
         Query q2 = new Query(QueryType.INSERT).addTable("std");
-        q2.setField("last_name", "'Dyominov'");
+        q2.setField("last_name", "'Dolenko'");
         q2.setField("first_name", "'Yulia'");
         date = dateFormat.parse("2019-09-06 10:00:00");
         dateSQL = dateFormat.format(date);

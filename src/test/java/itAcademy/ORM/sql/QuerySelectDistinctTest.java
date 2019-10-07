@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import static itAcademy.ORM.testData.Connection.*;
 import static junit.framework.TestCase.assertEquals;
 
-public class QuerySelectTest {
+public class QuerySelectDistinctTest {
     private Transaction transaction;
     private Statement statement;
 
@@ -36,7 +36,7 @@ public class QuerySelectTest {
         Query q = new Query(QueryType.INSERT).addTable("std");
         q.setField("last_name", "'Hurieva'");
         q.setField("first_name", "'Hanna'");
-        java.text.SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         java.util.Date date = dateFormat.parse("2019-09-06 12:00:00");
         String dateSQL = dateFormat.format(date);
         q.setField("date_of_registration", "'" + dateSQL + "'");
@@ -64,33 +64,25 @@ public class QuerySelectTest {
         statement.execute(q2.getExecutableSql());
         System.out.println(q2.getExecutableSql());
         transaction.commit();
-    }
 
-    @Test
-    public void shouldSelectDataFromTable() throws Exception {
-        Query query = new Query(QueryType.SELECT);
-        query.addTable("std");
-        System.out.println(query.getExecutableSql());
+        Query q3 = new Query(QueryType.INSERT).addTable("std");
+        q3.setField("last_name", "'Dolenko'");
+        q3.setField("first_name", "'Yulia'");
+        date = dateFormat.parse("2019-10-06 12:00:00");
+        dateSQL = dateFormat.format(date);
+        q3.setField("date_of_registration", "'" + dateSQL + "'");
+        q3.setField("gpa", 10.0d);
+        statement.execute(q3.getExecutableSql());
+        System.out.println(q3.getExecutableSql());
+        transaction.commit();
 
-        ResultSet result = statement.executeQuery(query.getExecutableSql());
-        while (result.next()) {
-            System.out.println(result.getString(1) + " " + result.getString(2) +
-                    " " + result.getString(3) + " " + result.getString(4)
-                    + " " + result.getString(5));
-        }
-        result.last();
-        assertEquals(result.getRow(), 3);
-
-        String sql = "TRUNCATE TABLE std ";
-        statement.execute(sql);
-        transaction.close();
     }
 
     @Test
     public void shouldSelectOneColumnFromTable() throws Exception {
-        Query query = new Query(QueryType.SELECT);
+        Query query = new Query(QueryType.SELECT_DISTINCT);
         query.addTable("std");
-        query.addField(new DataField("last_name"));
+        query.addField(new DataField("gpa"));
         System.out.println(query.getExecutableSql());
 
         ResultSet result = statement.executeQuery(query.getExecutableSql());
@@ -98,7 +90,7 @@ public class QuerySelectTest {
             System.out.println(result.getString(1));
         }
         result.last();
-        assertEquals(result.getRow(), 3);
+        assertEquals(result.getRow(), 2);
 
         String sql = "TRUNCATE TABLE std ";
         statement.execute(sql);
@@ -106,19 +98,20 @@ public class QuerySelectTest {
     }
 
     @Test
-    public void shouldSelectSomeColumnsFromTable() throws Exception {
-        Query query = new Query(QueryType.SELECT);
+    public void shouldSelectDistinctSomeColumnsWithWhereFromTable() throws Exception {
+        Query query = new Query(QueryType.SELECT_DISTINCT);
         query.addTable("std");
         query.addField(new DataField("last_name"));
-        query.addField(new DataField("gpa"));
-        System.out.println(query.getExecutableSql());
+        query.addField(new DataField("first_name"));
+        QueryBuilder queryBuilder = new QueryBuilder(query).where(new DataField("gpa = 10"));
+        System.out.println(queryBuilder.prepareSql());
 
         ResultSet result = statement.executeQuery(query.getExecutableSql());
         while (result.next()) {
             System.out.println(result.getString(1) + " " + result.getString(2));
         }
         result.last();
-        assertEquals(result.getRow(), 3);
+        assertEquals(result.getRow(), 2);
 
         String sql = "TRUNCATE TABLE std ";
         statement.execute(sql);
