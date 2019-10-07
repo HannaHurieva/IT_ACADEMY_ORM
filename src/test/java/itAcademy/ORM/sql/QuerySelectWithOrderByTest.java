@@ -36,6 +36,8 @@ public class QuerySelectWithOrderByTest {
         Util.generateTables();
         transaction = new BaseTransaction(basicDataSource.getConnection());
         statement = transaction.open().createStatement();
+        String sql = "TRUNCATE TABLE std ";
+        statement.execute(sql);
 
         Query q2 = new Query(QueryType.INSERT).addTable("std");
         q2.setField("last_name", "'Dolenko'");
@@ -96,9 +98,6 @@ public class QuerySelectWithOrderByTest {
             actual = result.getString(1) + " " + result.getString(2);
             expected = "Dolenko Yulia";
             assertEquals(actual,expected);
-
-            String sql = "TRUNCATE TABLE std ";
-            statement.execute(sql);
             transaction.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -130,9 +129,6 @@ public class QuerySelectWithOrderByTest {
             actual = result.getString(1) + " " + result.getString(2);
             expected = "Hurieva Hanna";
             assertEquals(actual,expected);
-
-            String sql = "TRUNCATE TABLE std ";
-            statement.execute(sql);
             transaction.close();
         } catch (SQLException e) {
             e.printStackTrace();

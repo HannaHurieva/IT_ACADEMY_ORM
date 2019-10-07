@@ -2,8 +2,6 @@ package itAcademy.ORM.sql;
 
 import itAcademy.ORM.connection.transaction.BaseTransaction;
 import itAcademy.ORM.connection.transaction.Transaction;
-import itAcademy.ORM.crud.CrudOperations;
-import itAcademy.ORM.crud.CrudOperationsImpl;
 import itAcademy.ORM.mapping.util.Util;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Before;
@@ -18,6 +16,7 @@ import static junit.framework.TestCase.assertEquals;
 
 public class QueryInsertTest {
     private Transaction transaction;
+    private Statement statement;
 
     @Before
     public void setUp() throws Exception {
@@ -32,14 +31,13 @@ public class QueryInsertTest {
         basicDataSource.setMaxWait(-1L);
         Util.generateTables();
         transaction = new BaseTransaction(basicDataSource.getConnection());
+        statement = transaction.open().createStatement();
+        String sql = "TRUNCATE TABLE std ";
+        statement.execute(sql);
     }
 
     @Test
     public void shouldInsertDataIntoTable() throws Exception {
-        Statement statement = transaction.open().createStatement();
-        String sql = "TRUNCATE TABLE std ";
-        statement.execute(sql);
-
         Query q = new Query(QueryType.INSERT).addTable("std");
         q.setField("last_name", "'Hurieva'");
         q.setField("first_name", "'Hanna'");
@@ -60,10 +58,6 @@ public class QueryInsertTest {
 
     @Test
     public void shouldInsertObjectIntoTable() throws Exception {
-        Statement statement = transaction.open().createStatement();
-        String sql = "TRUNCATE TABLE std ";
-        statement.execute(sql);
-
         Query q = new Query(QueryType.INSERT).addTable("std");
         q.setField("last_name", "'LastName'");
         q.setField("first_name", "'FirstName'");
@@ -86,10 +80,6 @@ public class QueryInsertTest {
 
     @Test
     public void shouldInsertSomeObjectsIntoTable() throws Exception {
-        Statement statement = transaction.open().createStatement();
-        String sql = "TRUNCATE TABLE std ";
-        statement.execute(sql);
-
         Query q1 = new Query(QueryType.INSERT).addTable("std");
         q1.setField("last_name", "'LastNameStd1'");
         q1.setField("first_name", "'FirstNameStd1'");

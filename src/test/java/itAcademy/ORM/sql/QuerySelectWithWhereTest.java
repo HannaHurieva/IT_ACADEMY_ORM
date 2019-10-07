@@ -35,6 +35,8 @@ public class QuerySelectWithWhereTest {
         Util.generateTables();
         transaction = new BaseTransaction(basicDataSource.getConnection());
         statement = transaction.open().createStatement();
+        String sql = "TRUNCATE TABLE std ";
+        statement.execute(sql);
 
         Query q = new Query(QueryType.INSERT).addTable("std");
         q.setField("last_name", "'Hurieva'");
@@ -84,9 +86,6 @@ public class QuerySelectWithWhereTest {
             }
             result.last();
             assertEquals(result.getRow(), 1);
-
-            String sql = "TRUNCATE TABLE std ";
-            statement.execute(sql);
             transaction.close();
         } catch (SQLException e) {
             e.printStackTrace();
