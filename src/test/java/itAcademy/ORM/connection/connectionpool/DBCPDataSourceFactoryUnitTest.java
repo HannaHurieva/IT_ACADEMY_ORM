@@ -8,17 +8,15 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import static itAcademy.ORM.testData.Connection.*;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class DBCPDataSourceFactoryUnitTest {
 
-    private Connection connection;
-
+    private BasicDataSource basicDataSource;
 
     @Before
-    public void setUp() throws SQLException {
-        BasicDataSource basicDataSource = new BasicDataSource();
+    public void setUp() {
+        basicDataSource = new BasicDataSource();
         basicDataSource.setDriverClassName(JDBC_DRIVER);
         basicDataSource.setUrl(JDBC_URL);
         basicDataSource.setUsername(JDBC_USERNAME);
@@ -27,17 +25,24 @@ public class DBCPDataSourceFactoryUnitTest {
         basicDataSource.setMaxIdle(DBCP_MAX_IDLE);
         basicDataSource.setMaxOpenPreparedStatements(DBCP_MAX_OPEN_PREPARED_STATEMENTS);
         basicDataSource.setMaxWait(-1L);
-
-        connection = basicDataSource.getConnection();
     }
 
     @Test
-    public void shouldDBCPDataSourceFactoryClass_whenCalledGetConnection_thenCorrect() throws SQLException {
-        assertTrue(connection.isValid(1));
+    public void shouldDBCPDataSourceFactoryClass_whenCalledGetConnection_thenCorrect() {
+        try (Connection connection = basicDataSource.getConnection()) {
+            assertTrue(connection.isValid(1));
+            assertFalse(connection.isClosed());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void testIfConnectionNotNull() {
-        assertNotNull(connection);
+        try (Connection connection = basicDataSource.getConnection()) {
+            assertNotNull(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

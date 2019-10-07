@@ -3,18 +3,21 @@ package itAcademy.ORM.sql;
 import itAcademy.ORM.connection.transaction.BaseTransaction;
 import itAcademy.ORM.connection.transaction.Transaction;
 import itAcademy.ORM.mapping.util.Util;
+import itAcademy.ORM.sql.subclauses.SubclauseType;
+import itAcademy.ORM.sql.subclauses.WhereClause;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 
 import static itAcademy.ORM.testData.Connection.*;
 import static junit.framework.TestCase.assertEquals;
 
-public class QuerySelectTest {
+public class QuerySelectWithWhereTest {
     private Transaction transaction;
     private Statement statement;
 
@@ -36,7 +39,7 @@ public class QuerySelectTest {
         Query q = new Query(QueryType.INSERT).addTable("std");
         q.setField("last_name", "'Hurieva'");
         q.setField("first_name", "'Hanna'");
-        java.text.SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         java.util.Date date = dateFormat.parse("2019-09-06 12:00:00");
         String dateSQL = dateFormat.format(date);
         q.setField("date_of_registration", "'" + dateSQL + "'");
@@ -67,61 +70,26 @@ public class QuerySelectTest {
     }
 
     @Test
-    public void shouldSelectDataFromTable() throws Exception {
-        Query query = new Query(QueryType.SELECT);
-        query.addTable("std");
-        System.out.println(query.getExecutableSql());
-
-        ResultSet result = statement.executeQuery(query.getExecutableSql());
-        while (result.next()) {
-            System.out.println(result.getString(1) + " " + result.getString(2) +
-                    " " + result.getString(3) + " " + result.getString(4)
-                    + " " + result.getString(5));
-        }
-        result.last();
-        assertEquals(result.getRow(), 3);
-
-        String sql = "TRUNCATE TABLE std ";
-        statement.execute(sql);
-        transaction.close();
-    }
-
-    @Test
-    public void shouldSelectOneColumnFromTable() throws Exception {
+    public void shouldSelectWithWhereFromTable() {
         Query query = new Query(QueryType.SELECT);
         query.addTable("std");
         query.addField(new DataField("last_name"));
+        query.addSubclause(SubclauseType.WHERE, new WhereClause(new DataField("gpa < 10.0")));
         System.out.println(query.getExecutableSql());
 
-        ResultSet result = statement.executeQuery(query.getExecutableSql());
-        while (result.next()) {
-            System.out.println(result.getString(1));
+        try {
+            ResultSet result = statement.executeQuery(query.getExecutableSql());
+            while (result.next()) {
+                System.out.println(result.getString(1));
+            }
+            result.last();
+            assertEquals(result.getRow(), 1);
+
+            String sql = "TRUNCATE TABLE std ";
+            statement.execute(sql);
+            transaction.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        result.last();
-        assertEquals(result.getRow(), 3);
-
-        String sql = "TRUNCATE TABLE std ";
-        statement.execute(sql);
-        transaction.close();
-    }
-
-    @Test
-    public void shouldSelectSomeColumnsFromTable() throws Exception {
-        Query query = new Query(QueryType.SELECT);
-        query.addTable("std");
-        query.addField(new DataField("last_name"));
-        query.addField(new DataField("gpa"));
-        System.out.println(query.getExecutableSql());
-
-        ResultSet result = statement.executeQuery(query.getExecutableSql());
-        while (result.next()) {
-            System.out.println(result.getString(1) + " " + result.getString(2));
-        }
-        result.last();
-        assertEquals(result.getRow(), 3);
-
-        String sql = "TRUNCATE TABLE std ";
-        statement.execute(sql);
-        transaction.close();
     }
 }

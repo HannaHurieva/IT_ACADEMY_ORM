@@ -78,12 +78,45 @@ public class QueryInsertTest {
 
         Query query = new Query(QueryType.SELECT);
         query.addTable("std");
-        DataField field = new DataField("*");
-        query.addField(field);
-
         ResultSet result = statement.executeQuery(query.getExecutableSql());
         result.last();
         assertEquals(result.getRow(), 1);
+        transaction.close();
+    }
+
+    @Test
+    public void shouldInsertSomeObjectsIntoTable() throws Exception {
+        Statement statement = transaction.open().createStatement();
+        String sql = "TRUNCATE TABLE std ";
+        statement.execute(sql);
+
+        Query q1 = new Query(QueryType.INSERT).addTable("std");
+        q1.setField("last_name", "'LastNameStd1'");
+        q1.setField("first_name", "'FirstNameStd1'");
+
+        java.text.SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        java.util.Date date = dateFormat.parse("2019-09-06 12:00:00");
+        String dateSQL = dateFormat.format(date);
+        q1.setField("date_of_registration", "'" + dateSQL + "'");
+        q1.setField("gpa", 8.0d);
+        System.out.println(q1.getExecutableSql());
+        statement.execute(q1.getExecutableSql());
+
+        Query q2 = new Query(QueryType.INSERT).addTable("std");
+        q2.setField("last_name", "'LastNameStd2'");
+        q2.setField("first_name", "'FirstNameStd2'");
+        date = dateFormat.parse("2019-10-06 08:00:00");
+        dateSQL = dateFormat.format(date);
+        q2.setField("date_of_registration", "'" + dateSQL + "'");
+        q2.setField("gpa", 10.0d);
+        System.out.println(q2.getExecutableSql());
+        statement.execute(q2.getExecutableSql());
+
+        Query query = new Query(QueryType.SELECT);
+        query.addTable("std");
+        ResultSet result = statement.executeQuery(query.getExecutableSql());
+        result.last();
+        assertEquals(result.getRow(), 2);
         transaction.close();
     }
 }
