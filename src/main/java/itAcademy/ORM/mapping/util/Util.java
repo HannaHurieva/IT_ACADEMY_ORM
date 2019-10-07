@@ -28,39 +28,45 @@ public class Util {
         }
     }
 
-    public static void generateTables()  {
-            generateTables(ReflectionAPI.getAllEntities(""));
+    public static void generateTables() {
+        generateTables(ReflectionAPI.getAllEntities(""));
     }
 
     private static void generateTables(List<Table> entities) {
         try (Statement preparedStatement = connection.createStatement()) {
             for (Table table : entities) {
                 StringBuilder sql = new StringBuilder(CREATE_TABLE);
-                sql.append(table.getTableName()).append("` (\n");
+                sql.append(table.getTableName()).append(QUOTE)
+                        .append(LEFT_BRACKET).append(NEXT_LINE);
                 for (Column column : table.getColumns()) {
                     if (column.isPK()) {
-                        sql.append("`").append(column.getDbName()).append("` ")
+                        sql.append(QUOTE).append(column.getDbName())
+                                .append(QUOTE).append(TAB)
                                 .append(convertType(column.getType()));
                         if (column.isAutoincrement()) sql.append(AUTO_INCREMENT);
-                        sql.append(",\n");
+                        sql.append(COMMA).append(NEXT_LINE);
                         sql.append(PRIMARY_KEY)
-                                .append(" (`").append(column.getDbName()).append("`)");
-                        sql.append(",");
-                        sql.append("\n");
+                                .append(LEFT_BRACKET)
+                                .append(QUOTE)
+                                .append(column.getDbName())
+                                .append(QUOTE)
+                                .append(RIGHT_BRACKET);
+                        sql.append(COMMA);
+                        sql.append(NEXT_LINE);
                     } else {
-                        sql.append("`").append(column.getDbName()).append("` ")
+                        sql.append(QUOTE).append(column.getDbName()).append(QUOTE)
+                                .append(TAB)
                                 .append(convertType(column.getType()));
                         if (column.isAutoincrement()) sql.append(AUTO_INCREMENT);
-                        sql.append(",\n");
+                        sql.append(COMMA).append(NEXT_LINE);
                     }
                 }
-                sql.deleteCharAt(sql.lastIndexOf(","));
-                sql.append(")");
+                sql.deleteCharAt(sql.lastIndexOf(COMMA));
+                sql.append(RIGHT_BRACKET);
                 preparedStatement.addBatch(sql.toString());
             }
             preparedStatement.executeBatch();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

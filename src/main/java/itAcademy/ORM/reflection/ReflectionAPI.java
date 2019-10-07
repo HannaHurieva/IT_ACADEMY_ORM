@@ -6,7 +6,6 @@ import itAcademy.ORM.mapping.Column;
 import itAcademy.ORM.mapping.Table;
 import org.reflections.Reflections;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
 
