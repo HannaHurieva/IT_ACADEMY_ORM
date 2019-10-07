@@ -4,8 +4,6 @@ import itAcademy.ORM.connection.transaction.BaseTransaction;
 import itAcademy.ORM.connection.transaction.Transaction;
 import itAcademy.ORM.mapping.util.Util;
 import itAcademy.ORM.sql.operations.QueryFieldOperation;
-import itAcademy.ORM.sql.subclauses.GroupByClause;
-import itAcademy.ORM.sql.subclauses.SubclauseType;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +16,7 @@ import java.text.SimpleDateFormat;
 import static itAcademy.ORM.testData.Connection.*;
 import static junit.framework.TestCase.assertEquals;
 
-public class QuerySelectWithGroupByTest {
+public class QuerySelectWithAggregateFunctionsTest {
     private Transaction transaction;
     private Statement statement;
 
@@ -75,34 +73,20 @@ public class QuerySelectWithGroupByTest {
     }
 
     @Test
-    public void shouldSelectCOUNT_FromTableWithGroupBy() {
+    public void shouldSelectCOUNT_FromTable() {
         Query query = new Query(QueryType.SELECT);
         query.addTable("std");
-        query.addSubclause(SubclauseType.GROUP_BY, new GroupByClause("last_name"));
-        new QueryBuilder(query).fieldOp(QueryFieldOperation.COUNT, "std_id");
-        query.addField(new DataField("last_name"));
-        query.addField(new DataField("first_name"));
+        new QueryBuilder(query).fieldOp(QueryFieldOperation.COUNT, "last_name");
         System.out.println(query.getExecutableSql());
 
         try {
             ResultSet result = statement.executeQuery(query.getExecutableSql());
             while (result.next()) {
-                System.out.println(result.getString(1) + " " + result.getString(2)
-                        + " " + result.getString(3));
+                System.out.println(result.getString(1));
             }
             result.last();
-            assertEquals(result.getRow(), 2);
-
-            String actual = result.getString(1) + " " + result.getString(2)
-                    + " " + result.getString(3);
-            String expected = "1 Hurieva Hanna";
-            assertEquals(actual, expected);
-
-            result.first();
-            actual = result.getString(1) + " " + result.getString(2)
-                    + " " + result.getString(3);
-            expected = "2 Dolenko Yulia";
-            assertEquals(actual, expected);
+            assertEquals(result.getRow(), 1);
+            assertEquals(Integer.parseInt(result.getString(1)), 3);
             transaction.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -110,11 +94,10 @@ public class QuerySelectWithGroupByTest {
     }
 
     @Test
-    public void shouldSelectMIN_FromTableWithGroupBy() {
+    public void shouldSelectMIN_FromTable() {
         Query query = new Query(QueryType.SELECT);
         query.addTable("std");
         new QueryBuilder(query).fieldOp(QueryFieldOperation.MIN, "gpa");
-        query.addSubclause(SubclauseType.GROUP_BY, new GroupByClause("last_name"));
         query.addField(new DataField("last_name"));
         System.out.println(query.getExecutableSql());
 
@@ -124,15 +107,9 @@ public class QuerySelectWithGroupByTest {
                 System.out.println(result.getString(1) + " " + result.getString(2));
             }
             result.last();
-            assertEquals(result.getRow(), 2);
-
+            assertEquals(result.getRow(), 1);
             String actual = result.getString(1) + " " + result.getString(2);
-            String expected = "8.0 Hurieva";
-            assertEquals(actual, expected);
-
-            result.first();
-            actual = result.getString(1) + " " + result.getString(2);
-            expected = "7.0 Dolenko";
+            String expected = "7.0 Dolenko";
             assertEquals(actual, expected);
             transaction.close();
         } catch (SQLException e) {
@@ -141,11 +118,10 @@ public class QuerySelectWithGroupByTest {
     }
 
     @Test
-    public void shouldSelectMAX_FromTableWithGroupBy() {
+    public void shouldSelectMAX_FromTable() {
         Query query = new Query(QueryType.SELECT);
         query.addTable("std");
         new QueryBuilder(query).fieldOp(QueryFieldOperation.MAX, "gpa");
-        query.addSubclause(SubclauseType.GROUP_BY, new GroupByClause("last_name"));
         query.addField(new DataField("last_name"));
         System.out.println(query.getExecutableSql());
 
@@ -155,15 +131,9 @@ public class QuerySelectWithGroupByTest {
                 System.out.println(result.getString(1) + " " + result.getString(2));
             }
             result.last();
-            assertEquals(result.getRow(), 2);
-
+            assertEquals(result.getRow(), 1);
             String actual = result.getString(1) + " " + result.getString(2);
-            String expected = "8.0 Hurieva";
-            assertEquals(actual, expected);
-
-            result.first();
-            actual = result.getString(1) + " " + result.getString(2);
-            expected = "9.0 Dolenko";
+            String expected = "9.0 Dolenko";
             assertEquals(actual, expected);
             transaction.close();
         } catch (SQLException e) {
@@ -176,26 +146,46 @@ public class QuerySelectWithGroupByTest {
         Query query = new Query(QueryType.SELECT);
         query.addTable("std");
         new QueryBuilder(query).fieldOp(QueryFieldOperation.SUM, "gpa");
-        query.addSubclause(SubclauseType.GROUP_BY, new GroupByClause("last_name"));
+        System.out.println(query.getExecutableSql());
+
+        try {
+            ResultSet result = statement.executeQuery(query.getExecutableSql());
+            while (result.next()) {
+                System.out.println(result.getString(1));
+            }
+            result.last();
+            assertEquals(result.getRow(), 1);
+
+            String actual = result.getString(1);
+            String expected = "24.0";
+            assertEquals(actual, expected);
+
+            transaction.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void shouldSelectAVG_FromTableWithGroupBy() {
+        Query query = new Query(QueryType.SELECT);
+        query.addTable("std");
+        new QueryBuilder(query).fieldOp(QueryFieldOperation.AVG, "gpa");
         query.addField(new DataField("last_name"));
         System.out.println(query.getExecutableSql());
 
         try {
             ResultSet result = statement.executeQuery(query.getExecutableSql());
             while (result.next()) {
-                System.out.println(result.getString(1) + " " + result.getString(2));
+                System.out.println(result.getString(1));
             }
             result.last();
-            assertEquals(result.getRow(), 2);
+            assertEquals(result.getRow(), 1);
 
-            String actual = result.getString(1) + " " + result.getString(2);
-            String expected = "8.0 Hurieva";
+            String actual = result.getString(1);
+            String expected = "8.0";
             assertEquals(actual, expected);
 
-            result.first();
-            actual = result.getString(1) + " " + result.getString(2);
-            expected = "16.0 Dolenko";
-            assertEquals(actual, expected);
             transaction.close();
         } catch (SQLException e) {
             e.printStackTrace();
