@@ -19,7 +19,7 @@ public class OrderByClause implements ISubclause {
         return format;
     }
 
-    public String prepareFieldOrderPolicy(String field) {
+    private String prepareFieldOrderPolicy(String field) {
         field = field.trim();
         ORDER_OPTIONS policy = null;
         if (field.charAt(0) == '+') {

@@ -9,7 +9,9 @@ import itAcademy.ORM.mapping.Reference;
 import itAcademy.ORM.mapping.Table;
 import org.reflections.Reflections;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +30,7 @@ public class ReflectionAPI {
     }
 
     private static List<Column> getAnnotatedFields(final Class<?> clazz) {
-        //todo remove duplicates
         List<Column> tableColumns = new ArrayList<>();
-        Table t = new Table();
         java.lang.reflect.Field[] fields = clazz.getDeclaredFields();
         for (java.lang.reflect.Field field : fields) {
             try {
@@ -68,7 +68,6 @@ public class ReflectionAPI {
         }
         return tableColumns;
     }
-
 
     public static void setField(Object object, String fieldName, Object value) throws IllegalAccessException, ReflectionException {
         boolean noField = true;

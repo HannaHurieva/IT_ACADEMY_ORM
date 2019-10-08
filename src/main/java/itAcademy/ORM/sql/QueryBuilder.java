@@ -29,7 +29,7 @@ public class QueryBuilder {
         query = new Query(queryType);
     }
 
-    public QueryBuilder(Query query) {
+    QueryBuilder(Query query) {
         this.query = query;
     }
 
@@ -57,7 +57,7 @@ public class QueryBuilder {
         return new QueryBuilder(QueryType.DELETE);
     }
 
-    public static QueryBuilder getBuilder(Query existingQuery) {
+    static QueryBuilder getBuilder(Query existingQuery) {
         return new QueryBuilder(existingQuery);
     }
 
@@ -71,7 +71,7 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder from(String... tableNames) {
+    private QueryBuilder from(String... tableNames) {
         for (String tbl : tableNames)
             this.from(tbl, null);
         return this;
@@ -89,7 +89,7 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder selectAs(String column, String as) {
+    private QueryBuilder selectAs(String column, String as) {
         DataField df = new DataField(column, as);
         query.addField(df);
         return this;
@@ -118,7 +118,7 @@ public class QueryBuilder {
         return this.sum(field, "sum");
     }
 
-    public QueryBuilder sum(String field, String as) {
+    private QueryBuilder sum(String field, String as) {
         return this.fieldOpAs(QueryFieldOperation.SUM, field, as);
     }
 
@@ -142,20 +142,20 @@ public class QueryBuilder {
         return this.count("*"); // ALL
     }
 
-    public QueryBuilder count(String column) {
+    private QueryBuilder count(String column) {
         return this.countAs(column, "count");
     }
 
-    public QueryBuilder countAs(String column, String as) {
+    private QueryBuilder countAs(String column, String as) {
         return this.fieldOpAs(QueryFieldOperation.COUNT, column, as);
     }
 
-    public QueryBuilder fieldOp(QueryFieldOperation op, String column) {
+    QueryBuilder fieldOp(QueryFieldOperation op, String column) {
         return fieldOpAs(op, column, null);
     }
 
-    public QueryBuilder fieldOpAs(QueryFieldOperation op, String column,
-                                  String as) {
+    private QueryBuilder fieldOpAs(QueryFieldOperation op, String column,
+                                   String as) {
         OperationalField opf = new OperationalField(op, column, as);
         query.addField(opf);
         return this;
@@ -192,7 +192,7 @@ public class QueryBuilder {
         return this.limit(recordCount, 0);
     }
 
-    public QueryBuilder limit(int recordCount, int startOffset) {
+    private QueryBuilder limit(int recordCount, int startOffset) {
         ISubclause s = new LimitClause(recordCount, startOffset);
         query.addSubclause(SubclauseType.LIMIT, s);
         return this;
@@ -230,7 +230,7 @@ public class QueryBuilder {
         return join(JoinType.JOIN, table, on);
     }
 
-    public QueryBuilder join(JoinType type, String table, Criterion on) {
+    private QueryBuilder join(JoinType type, String table, Criterion on) {
         ISubclause s = new JoinClause(type, table, on);
         query.addSubclause(SubclauseType.JOIN, s);
         return this;
@@ -244,7 +244,7 @@ public class QueryBuilder {
      * QUERY BUILDER METHODS
      */
 
-    public static String concatWithSeparators(Collection<?> queryParametersList, String separator) {
+    private static String concatWithSeparators(Collection<?> queryParametersList, String separator) {
         if (queryParametersList == null) return null;
         int size = queryParametersList.size();
         int i = 0;
@@ -403,7 +403,7 @@ public class QueryBuilder {
         }
     }
 
-    public String prepareSql() {// StringBuffer usage
+    String prepareSql() {// StringBuffer usage
         String template = query.getType().getTemplate();
         Set<String> dynamicFields = extractFields(template);
         Map<String, String> modelMap = new HashMap<>();

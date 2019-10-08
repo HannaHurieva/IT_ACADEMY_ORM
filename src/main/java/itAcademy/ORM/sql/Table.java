@@ -8,7 +8,7 @@ public class Table {
         this.name = name;
     }
 
-    public Table(String name, String handle) {
+    Table(String name, String handle) {
         this(name);
         this.alias = handle;
     }

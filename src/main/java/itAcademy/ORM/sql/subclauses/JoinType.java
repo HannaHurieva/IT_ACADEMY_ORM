@@ -13,7 +13,7 @@ public enum JoinType {
 
     private String repr;
 
-    private JoinType(String s) {
+    JoinType(String s) {
         this.repr = s;
     }
 

@@ -7,7 +7,7 @@ public class OperationalField implements IQueryField {
     private String fieldName;
     private String alias;
 
-    public OperationalField(QueryFieldOperation operation, String fieldName) {
+    private OperationalField(QueryFieldOperation operation, String fieldName) {
         this.operation = operation;
         this.fieldName = fieldName;
     }

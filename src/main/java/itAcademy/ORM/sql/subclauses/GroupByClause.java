@@ -20,7 +20,7 @@ public class GroupByClause implements ISubclause {
         return String.format(getClauseFormat(), concatWithSeparators(this.groupByListValues, ", "));
     }
 
-    public static String concatWithSeparators(String[] groupByListValues, String separator) {
+    private static String concatWithSeparators(String[] groupByListValues, String separator) {
         if (groupByListValues == null) return null;
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < groupByListValues.length; i++) {
