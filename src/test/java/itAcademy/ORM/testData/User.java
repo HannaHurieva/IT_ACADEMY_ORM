@@ -1,17 +1,17 @@
 package itAcademy.ORM.testData;
 
-import itAcademy.ORM.annotations.Entity;
 import itAcademy.ORM.annotations.Column;
+import itAcademy.ORM.annotations.Entity;
 import itAcademy.ORM.annotations.Id;
+import itAcademy.ORM.annotations.ManyToOne;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 @Entity(tableName = "user")
 public class User implements Serializable {
 
-    @Id(autoIncremental = true, fieldName = "id")
-    private int id;
+    @Id(autoIncremental = false, fieldName = "id")
+    private String id;
 
     @Column(fieldName = "name")
     private String name;
@@ -19,20 +19,24 @@ public class User implements Serializable {
     @Column(fieldName = "test")
     private int test;
 
+    @ManyToOne(fieldName = "db_id", toTable = "db", toTableFieldName = "id")
+    private String dbId;
+
     public User() {
     }
 
-    public User(int id, String name, int test) {
+    public User(String id, String name, int test, String usersId) {
         this.id = id;
         this.name = name;
         this.test = test;
+        this.dbId = usersId;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -52,18 +56,11 @@ public class User implements Serializable {
         this.test = test;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id == user.id &&
-                test == user.test &&
-                Objects.equals(name, user.name);
+    public String getUsersId() {
+        return dbId;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, test);
+    public void setUsersId(String usersId) {
+        this.dbId = usersId;
     }
 }

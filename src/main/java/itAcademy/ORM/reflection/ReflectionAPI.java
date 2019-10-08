@@ -2,6 +2,7 @@ package itAcademy.ORM.reflection;
 
 import itAcademy.ORM.annotations.Entity;
 import itAcademy.ORM.annotations.Id;
+import itAcademy.ORM.annotations.ManyToOne;
 import itAcademy.ORM.annotations.OneToOne;
 import itAcademy.ORM.mapping.Column;
 import itAcademy.ORM.mapping.Reference;
@@ -43,7 +44,7 @@ public class ReflectionAPI {
                                 getAnnotation(Id.class).
                                 fieldName(), field.getType(), true, false, field.
                                 getAnnotation(Id.class).autoIncremental(), null));
-                    }else if (field.isAnnotationPresent(OneToOne.class)) {
+                    } else if (field.isAnnotationPresent(OneToOne.class)) {
                         Reference reference = new Reference(field.getAnnotation(OneToOne.class).fieldName(),
                                 field.getAnnotation(OneToOne.class).toTable(),
                                 field.getAnnotation(OneToOne.class).toTableFieldName());
@@ -51,6 +52,14 @@ public class ReflectionAPI {
                                 getAnnotation(OneToOne.class).
                                 fieldName(), field.getType(), false, true, field.
                                 getAnnotation(OneToOne.class).autoIncremental(), reference));
+                    } else if (field.isAnnotationPresent(ManyToOne.class)) {
+                        Reference reference = new Reference(field.getAnnotation(ManyToOne.class).fieldName(),
+                                field.getAnnotation(ManyToOne.class).toTable(),
+                                field.getAnnotation(ManyToOne.class).toTableFieldName());
+                        tableColumns.add(new Column(field.getName(), field.
+                                getAnnotation(ManyToOne.class).
+                                fieldName(), field.getType(), false, true, field.
+                                getAnnotation(ManyToOne.class).autoIncremental(), reference));
                     }
             } catch (SecurityException ignored) {
             }

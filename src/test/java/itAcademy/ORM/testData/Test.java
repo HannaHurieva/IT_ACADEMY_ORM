@@ -18,8 +18,8 @@ public class Test {
     @Column(fieldName = "title")
     private String title;
 
-    @OneToOne(fieldName = "user_id", toTable = "user", toTableFieldName = "id")
-    private Integer userId;
+    @OneToOne(fieldName = "fk_user_id", toTable = "user", toTableFieldName = "id")
+    private String userId;
 
     public Test() {
     }
@@ -40,11 +40,11 @@ public class Test {
         this.title = title;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -54,7 +54,7 @@ public class Test {
         if (o == null || getClass() != o.getClass()) return false;
         Test test = (Test) o;
         return id == test.id &&
-                userId == test.userId &&
+                userId.equals(test.userId) &&
                 Objects.equals(title, test.title);
     }
 
