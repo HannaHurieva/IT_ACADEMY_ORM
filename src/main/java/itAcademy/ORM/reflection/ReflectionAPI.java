@@ -28,6 +28,7 @@ public class ReflectionAPI {
     }
 
     private static List<Column> getAnnotatedFields(final Class<?> clazz) {
+        //todo remove duplicates
         List<Column> tableColumns = new ArrayList<>();
         Table t = new Table();
         java.lang.reflect.Field[] fields = clazz.getDeclaredFields();

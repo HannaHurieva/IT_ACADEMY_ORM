@@ -59,6 +59,7 @@ public class CrudOperationsImpl implements CrudOperations {
 
 
     @Override
+    //TODO : разбить на методы - собрать строку и выполнить запрос
     public Object insert(Object obj) {
         LinkedHashMap<String, Object> fields = new LinkedHashMap<>();
         HelperInsert helperInsert = null;

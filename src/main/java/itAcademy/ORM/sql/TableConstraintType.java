@@ -15,8 +15,8 @@ public enum TableConstraintType {
 
     private String template;
 
-    private TableConstraintType(String tpl) {
-        this.template = tpl;
+    private TableConstraintType(String template) {
+        this.template = template;
     }
 
     public String getTemplate() {

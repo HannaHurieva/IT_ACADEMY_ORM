@@ -15,7 +15,6 @@ public class TableConstraint {
         for (int i = 0; i < values.length; i++) {
             if (values[i] == null) values[i] = "NULL";
         }
-
         return String.format(type.getTemplate(), values);
     }
 }

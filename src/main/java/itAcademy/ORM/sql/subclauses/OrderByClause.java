@@ -4,14 +4,14 @@ public class OrderByClause implements ISubclause {
 
     private static final String format = "ORDER BY %s";
 
-    private static enum ORDER_OPTIONS {
-        ASC, DESC;
+    private enum ORDER_OPTIONS {
+        ASC, DESC
     }
 
-    private String[] by;
+    private String[] orderByListValues;
 
-    public OrderByClause(String... by) {
-        this.by = by;
+    public OrderByClause(String... orderByListValues) {
+        this.orderByListValues = orderByListValues;
     }
 
     @Override
@@ -21,9 +21,7 @@ public class OrderByClause implements ISubclause {
 
     public String prepareFieldOrderPolicy(String field) {
         field = field.trim();
-
         ORDER_OPTIONS policy = null;
-
         if (field.charAt(0) == '+') {
             policy = ORDER_OPTIONS.ASC;
             field = field.substring(1);
@@ -37,15 +35,12 @@ public class OrderByClause implements ISubclause {
     @Override
     public String toString() {
         StringBuilder order = new StringBuilder();
-
-        for (int i = 0; i < by.length; i++) {
-            order.append(prepareFieldOrderPolicy(by[i]));
-
-            if (i != by.length - 1) {
+        for (int i = 0; i < orderByListValues.length; i++) {
+            order.append(prepareFieldOrderPolicy(orderByListValues[i]));
+            if (i != orderByListValues.length - 1) {
                 order.append(", ");
             }
         }
-
         return String.format(getClauseFormat(), order.toString());
     }
 }

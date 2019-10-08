@@ -4,10 +4,10 @@ public class GroupByClause implements ISubclause {
 
     private static final String format = "GROUP BY %s";
 
-    private String[] by;
+    private String[] groupByListValues;
 
-    public GroupByClause(String... by) {
-        this.by = by;
+    public GroupByClause(String... groupByListValues) {
+        this.groupByListValues = groupByListValues;
     }
 
     @Override
@@ -17,15 +17,15 @@ public class GroupByClause implements ISubclause {
 
     @Override
     public String toString() {
-        return String.format(getClauseFormat(), concatNoEscape(this.by, ", "));
+        return String.format(getClauseFormat(), concatWithSeparators(this.groupByListValues, ", "));
     }
 
-    public static String concatNoEscape(String[] a, String union) {
-        if (a == null) return null;
+    public static String concatWithSeparators(String[] groupByListValues, String separator) {
+        if (groupByListValues == null) return null;
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < a.length; i++) {
-            sb.append(a[i]);
-            if (i != a.length - 1) sb.append(union);
+        for (int i = 0; i < groupByListValues.length; i++) {
+            sb.append(groupByListValues[i]);
+            if (i != groupByListValues.length - 1) sb.append(separator);
         }
         return sb.toString();
     }

@@ -12,8 +12,8 @@ public class LimitClause implements ISubclause {
     }
 
     public LimitClause(int recordCount, int startOffset) {
-        this.start = startOffset;
         this.count = recordCount;
+        this.start = startOffset;
     }
 
     @Override

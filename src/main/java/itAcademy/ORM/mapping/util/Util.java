@@ -61,6 +61,7 @@ public class Util {
     }
 
     private static void generateTables(List<Table> entities) {
+        //TODO: дубль код в отдельный метод
         try (Statement preparedStatement = connection.createStatement()) {
             for (Table table : entities) {
                 StringBuilder sql = new StringBuilder(CREATE_TABLE);

@@ -170,8 +170,7 @@ public class QueryBuilder {
     public QueryBuilder viewDetails(String viewName, Query resultQuery) {
         return this.selectAs(viewName, resultQuery.nest());
     }
-
-
+    
     public QueryBuilder set(String field, Query value) {
         return this.setField(field, value);
     }
@@ -198,8 +197,7 @@ public class QueryBuilder {
         query.addSubclause(SubclauseType.LIMIT, s);
         return this;
     }
-
-
+    
     public QueryBuilder groupBy(String... by) {
         ISubclause s = new GroupByClause(by);
         query.addSubclause(SubclauseType.GROUP_BY, s);
@@ -246,17 +244,17 @@ public class QueryBuilder {
      * QUERY BUILDER METHODS
      */
 
-    public static String concat(Collection<?> a, String glue) {
-        if (a == null) return null;
-        int size = a.size();
+    public static String concatWithSeparators(Collection<?> queryParametersList, String separator) {
+        if (queryParametersList == null) return null;
+        int size = queryParametersList.size();
         int i = 0;
-        StringBuilder sb = new StringBuilder();
-        for (Object o : a) {
-            sb.append(o.toString());
-            if (i != size - 1) sb.append(glue);
+        StringBuilder result = new StringBuilder();
+        for (Object o : queryParametersList) {
+            result.append(o.toString());
+            if (i != size - 1) result.append(separator);
             i++;
         }
-        return sb.toString();
+        return result.toString();
     }
 
     private String prepareSelectFieldList() {
@@ -265,7 +263,7 @@ public class QueryBuilder {
         if (fields == null || fields.isEmpty()) {
             return "*";
         } else {
-            return concat(query.getFieldList(), ", ");
+            return concatWithSeparators(query.getFieldList(), ", ");
         }
     }
 
@@ -307,7 +305,7 @@ public class QueryBuilder {
     }
 
     private String prepareTableConstraints() {
-        return concat(this.query.getConstraints(), ", ");
+        return concatWithSeparators(this.query.getConstraints(), ", ");
     }
 
     private String prepareTableList() throws NoTableSpecifiedException {
@@ -315,7 +313,7 @@ public class QueryBuilder {
 
         if ((tables == null || tables.isEmpty()))
             throw new NoTableSpecifiedException();
-        return concat(tables, ", ");
+        return concatWithSeparators(tables, ", ");
     }
 
 
@@ -368,10 +366,6 @@ public class QueryBuilder {
         return sb.toString();
     }
 
-    private String prepareIndexName() {
-        return this.query.getIndexName();
-    }
-
     private String getTemplateFieldValue(String tplField) throws MappingException {
         if ("SELECT_COLUMN_LIST".equals(tplField))
             return prepareSelectFieldList();
@@ -381,8 +375,6 @@ public class QueryBuilder {
             return prepareTableConstraints();
         if ("TABLE_LIST".equals(tplField))
             return prepareTableList();
-        if ("INDEX_NAME".equals(tplField))
-            return prepareIndexName();
         if ("VALUE_LIST".equals(tplField))
             return prepareValueList();
         if ("COLUMN_VALUE_LIST".equals(tplField))
@@ -392,23 +384,20 @@ public class QueryBuilder {
         if ("DATABASE".equals(tplField))
             return prepareDatabase();
 
-
         // if reserved placeholder keywords are not found
         // try to match subclauses e.g. WHERE, GROUP_BY
         SubclauseType subclause = SubclauseType.lookup(tplField);
         if (subclause != null) {
             return this.prepareSubclause(subclause);
         }
-
-        // nothing found, desperately replace it with ""
+        // if nothing found, replace it with ""
         return "";
     }
 
     private String prepareSubclause(SubclauseType sType) {
-        ISubclause s = this.query.getSubclause(sType);
-
-        if (s != null) {
-            return " " + s.toString(); // prepend a space to split subclauses {A}{B}->AVAL BVAL
+        ISubclause subclause = this.query.getSubclause(sType);
+        if (subclause != null) {
+            return " " + subclause.toString(); // prepend a space to split subclauses {A}{B}->AVAL BVAL
         } else {
             return "";
         }
@@ -417,7 +406,6 @@ public class QueryBuilder {
     public String prepareSql() {// StringBuffer usage
         String template = query.getType().getTemplate();
         Set<String> dynamicFields = extractFields(template);
-
         Map<String, String> modelMap = new HashMap<>();
         for (String tplField : dynamicFields) {
             modelMap.put(tplField, getTemplateFieldValue(tplField));

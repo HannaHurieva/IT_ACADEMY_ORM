@@ -142,7 +142,7 @@ public class QuerySelectWithAggregateFunctionsTest {
     }
 
     @Test
-    public void shouldSelectSUM_FromTableWithGroupBy() {
+    public void shouldSelectSUM_FromTable() {
         Query query = new Query(QueryType.SELECT);
         query.addTable("std");
         new QueryBuilder(query).fieldOp(QueryFieldOperation.SUM, "gpa");
@@ -167,7 +167,7 @@ public class QuerySelectWithAggregateFunctionsTest {
     }
 
     @Test
-    public void shouldSelectAVG_FromTableWithGroupBy() {
+    public void shouldSelectAVG_FromTable() {
         Query query = new Query(QueryType.SELECT);
         query.addTable("std");
         new QueryBuilder(query).fieldOp(QueryFieldOperation.AVG, "gpa");

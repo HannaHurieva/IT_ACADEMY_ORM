@@ -6,7 +6,7 @@ import java.util.Map;
 public enum SubclauseType {
     WHERE, ORDER_BY, GROUP_BY, HAVING, LIMIT, JOIN;
 
-    private static Map<String, SubclauseType> lookup = new HashMap<String, SubclauseType>();
+    private static Map<String, SubclauseType> lookup = new HashMap<>();
 
     static {
         for (SubclauseType t : values())

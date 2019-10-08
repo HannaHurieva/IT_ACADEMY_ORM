@@ -15,19 +15,15 @@ public class Query extends Criterion {
     private Map<String, String> valuedFieldMap;
     private Map<SubclauseType, ISubclause> subclauses;
     private List<TableConstraint> constraints;
-
-    private String indexName;
-
     private String alias;
-
     private String nativeQuery = null;
 
     public Query() {
-        tables = new ArrayList<Table>();
-        subclauses = new EnumMap<SubclauseType, ISubclause>(SubclauseType.class);
-        fieldList = new ArrayList<IQueryField>();
-        valuedFieldMap = new HashMap<String, String>();
-        constraints = new ArrayList<TableConstraint>();
+        tables = new ArrayList<>();
+        subclauses = new EnumMap<>(SubclauseType.class);
+        fieldList = new ArrayList<>();
+        valuedFieldMap = new HashMap<>();
+        constraints = new ArrayList<>();
     }
 
     public Query(QueryType queryType) {
@@ -130,19 +126,10 @@ public class Query extends Criterion {
     }
 
     /**
-     * Get executable query (preceeded by semicolon)
+     * Get executable query (preceded by semicolon)
      */
     public String getExecutableSql() {
         return new StringBuffer(this.toString()).append(';').toString();
     }
-
-    public void setIndexName(String indexName) {
-        this.indexName = indexName;
-    }
-
-    public String getIndexName() {
-        return indexName;
-    }
-
 }
 

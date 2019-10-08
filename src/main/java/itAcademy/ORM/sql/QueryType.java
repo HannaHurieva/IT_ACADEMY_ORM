@@ -4,7 +4,7 @@ package itAcademy.ORM.sql;
  * Includes templates for SQL statements of various query types.
  */
 public enum QueryType {
-    USE_DATABASE("USE DATABASE {DATABASE}"), // highly depends on DBMS
+    USE_DATABASE("USE DATABASE {DATABASE}"),
 
     CREATE_TABLE("CREATE TABLE {TABLE_LIST} ({COLUMN_OR_CONSTRAINT_DESCRIPTION_LIST})"),
     CREATE_TABLE_IF_NOT_EXISTS("CREATE TABLE IF NOT EXISTS {TABLE_LIST} ({COLUMN_OR_CONSTRAINT_DESCRIPTION_LIST})"),
@@ -20,8 +20,8 @@ public enum QueryType {
 
     private String template;
 
-    private QueryType(String tpl) {
-        this.template = tpl;
+    private QueryType(String template) {
+        this.template = template;
     }
 
     public String getTemplate() {
