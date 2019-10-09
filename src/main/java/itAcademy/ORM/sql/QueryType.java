@@ -1,0 +1,30 @@
+package itAcademy.ORM.sql;
+
+/**
+ * Includes templates for SQL statements of various query types.
+ */
+public enum QueryType {
+    USE_DATABASE("USE DATABASE {DATABASE}"),
+
+    CREATE_TABLE("CREATE TABLE {TABLE_LIST} ({COLUMN_OR_CONSTRAINT_DESCRIPTION_LIST})"),
+    CREATE_TABLE_IF_NOT_EXISTS("CREATE TABLE IF NOT EXISTS {TABLE_LIST} ({COLUMN_OR_CONSTRAINT_DESCRIPTION_LIST})"),
+    DROP_TABLE("DROP TABLE {TABLE_LIST}"),
+    DROP_TABLE_IF_EXISTS("DROP TABLE IF EXISTS {TABLE_LIST}"),
+
+    SELECT("SELECT {SELECT_COLUMN_LIST} FROM {TABLE_LIST} {JOIN}{WHERE}{GROUP_BY}{HAVING}{ORDER_BY}{LIMIT}"),
+    SELECT_DISTINCT("SELECT DISTINCT {SELECT_COLUMN_LIST} FROM {TABLE_LIST} {JOIN}{WHERE}{GROUP_BY}{HAVING}{ORDER_BY}{LIMIT}"),
+
+    INSERT("INSERT INTO {TABLE_LIST} ({COLUMN_LIST}) VALUES ({VALUE_LIST})"),
+    UPDATE("UPDATE {TABLE_LIST} SET {COLUMN_VALUE_LIST} {WHERE}"),
+    DELETE("DELETE FROM {TABLE_LIST} {WHERE}");
+
+    private String template;
+
+    private QueryType(String template) {
+        this.template = template;
+    }
+
+    public String getTemplate() {
+        return this.template;
+    }
+}
