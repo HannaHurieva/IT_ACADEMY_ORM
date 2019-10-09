@@ -9,9 +9,7 @@ import itAcademy.ORM.mapping.Reference;
 import itAcademy.ORM.mapping.Table;
 import org.reflections.Reflections;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,34 +32,9 @@ public class ReflectionAPI {
         java.lang.reflect.Field[] fields = clazz.getDeclaredFields();
         for (java.lang.reflect.Field field : fields) {
             try {
-                if (!java.lang.reflect.Modifier.isStatic(field.getModifiers()))
-                    if (field.isAnnotationPresent(itAcademy.ORM.annotations.Column.class)) {
-                        tableColumns.add(new Column(field.getName(), field.
-                                getAnnotation(itAcademy.ORM.annotations.Column.class).
-                                fieldName(), field.getType(), false, false, field.
-                                getAnnotation(itAcademy.ORM.annotations.Column.class).autoIncremental(), null));
-                    } else if (field.isAnnotationPresent(Id.class)) {
-                        tableColumns.add(new Column(field.getName(), field.
-                                getAnnotation(Id.class).
-                                fieldName(), field.getType(), true, false, field.
-                                getAnnotation(Id.class).autoIncremental(), null));
-                    } else if (field.isAnnotationPresent(OneToOne.class)) {
-                        Reference reference = new Reference(field.getAnnotation(OneToOne.class).fieldName(),
-                                field.getAnnotation(OneToOne.class).toTable(),
-                                field.getAnnotation(OneToOne.class).toTableFieldName());
-                        tableColumns.add(new Column(field.getName(), field.
-                                getAnnotation(OneToOne.class).
-                                fieldName(), field.getType(), false, true, field.
-                                getAnnotation(OneToOne.class).autoIncremental(), reference));
-                    } else if (field.isAnnotationPresent(ManyToOne.class)) {
-                        Reference reference = new Reference(field.getAnnotation(ManyToOne.class).fieldName(),
-                                field.getAnnotation(ManyToOne.class).toTable(),
-                                field.getAnnotation(ManyToOne.class).toTableFieldName());
-                        tableColumns.add(new Column(field.getName(), field.
-                                getAnnotation(ManyToOne.class).
-                                fieldName(), field.getType(), false, true, field.
-                                getAnnotation(ManyToOne.class).autoIncremental(), reference));
-                    }
+                if (!java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+                    fillTableColumnFromField(tableColumns, field);
+                }
             } catch (SecurityException ignored) {
             }
 
@@ -95,6 +68,46 @@ public class ReflectionAPI {
 
     public static List<Table> getTables() {
         return tables;
+    }
+
+    private static void fillTableColumnFromField(List<Column> tableColumns, Field field) {
+        Reference reference = null;
+        String fieldName = "";
+        boolean isPK = false;
+        boolean isFK = false;
+        boolean autoIncremental = false;
+        if (field.isAnnotationPresent(itAcademy.ORM.annotations.Column.class)) {
+            fieldName = field.getAnnotation(itAcademy.ORM.annotations.Column.class).fieldName();
+            autoIncremental = field.getAnnotation(itAcademy.ORM.annotations.Column.class).autoIncremental();
+        } else if (field.isAnnotationPresent(Id.class)) {
+            fieldName = field.getAnnotation(Id.class).fieldName();
+            autoIncremental = field.getAnnotation(Id.class).autoIncremental();
+            isPK = true;
+        } else if (field.isAnnotationPresent(OneToOne.class)) {
+            reference = getReferenceOneToOne(field);
+            fieldName = field.getAnnotation(OneToOne.class).fieldName();
+            autoIncremental = field.getAnnotation(OneToOne.class).autoIncremental();
+            isFK = true;
+        } else if (field.isAnnotationPresent(ManyToOne.class)) {
+            reference = getReferenceManyToOne(field);
+            fieldName = field.getAnnotation(ManyToOne.class).fieldName();
+            autoIncremental = field.getAnnotation(ManyToOne.class).autoIncremental();
+            isFK = true;
+        }
+        tableColumns.add(new Column(field.getName(), fieldName, field.getType(),
+                isPK, isFK, autoIncremental, reference));
+    }
+
+    private static Reference getReferenceOneToOne(Field field) {
+        return new Reference(field.getAnnotation(OneToOne.class).fieldName(),
+                field.getAnnotation(OneToOne.class).toTable(),
+                field.getAnnotation(OneToOne.class).toTableFieldName());
+    }
+
+    private static Reference getReferenceManyToOne(Field field) {
+        return new Reference(field.getAnnotation(ManyToOne.class).fieldName(),
+                field.getAnnotation(ManyToOne.class).toTable(),
+                field.getAnnotation(ManyToOne.class).toTableFieldName());
     }
 
 }
